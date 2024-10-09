@@ -11,6 +11,7 @@ public class Timeslot implements Comparable<Timeslot> {
     private int hour;     // Hour of the timeslot (0-23)
     private int minute;   // Minute of the timeslot (0-59)
 
+
     /**
      * Constructs a Timeslot with the specified hour and minute.
      *
@@ -71,7 +72,26 @@ public class Timeslot implements Comparable<Timeslot> {
         }
         return Integer.compare(this.minute, other.minute);
     }
-
+    public static Timeslot fromSlotNumber(int slotNumber) {
+        //The system shall provide 6 slots in the morning and afternoon, respectively, a total of 12 slots per weekday.
+//Each slot is 30 minutes, the first in the morning is 9:00 AM, and the first in the afternoon is 2:00 PM. The last
+//appointment is at 4:30 PM.
+        return switch (slotNumber) {
+            case 1 -> new Timeslot(9, 0);
+            case 2 -> new Timeslot(9, 30);
+            case 3 -> new Timeslot(10, 0);
+            case 4 -> new Timeslot(10, 30);
+            case 5 -> new Timeslot(11, 0);
+            case 6 -> new Timeslot(11, 30);
+            case 7 -> new Timeslot(14, 0);
+            case 8 -> new Timeslot(14, 30);
+            case 9 -> new Timeslot(15, 0);
+            case 10 -> new Timeslot(15, 30);
+            case 11 -> new Timeslot(16, 0);
+            case 12 -> new Timeslot(16, 30);
+            default -> null;  // Return null for invalid slot numbers
+        };
+    }
     /**
      * Checks if two timeslots are equal based on their hour and minute.
      *

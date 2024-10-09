@@ -4,6 +4,8 @@ import util.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -138,11 +140,34 @@ public class ClinicManager {
         String firstName = tokens[3];
         String lastName = tokens[4];
         Date dob = parseDate(tokens[5]);
-        int npi = Integer.parseInt(tokens[6]);
-        
+        String npi = tokens[6];
+        if (!appointmentDate.isValid()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is not a valid calendar date.");
+        } else if (appointmentDate.isTodayOrPast()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is today or a date before today");
+        } else if (appointmentDate.isWeekend()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is a Saturday or Sunday.");
+        } else if (!appointmentDate.SixMonths()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is not within six months.");
+        }
+        if (!isValidTimeslot(tokens[2])) {
+            System.out.println(tokens[2] + " is not a valid time slot");
+            return;  // Stop if the timeslot is invalid
+        }
+        if (!isValidDob(dob)) {
+            System.out.println("Patient dob: " + dob + " is not a valid calendar date.");
+            return;
+        }
+        //check if appointment exists
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
+                System.out.println("Appointment already exists.");
+                return;
+            }
+        }
         // Additional logic to create and validate an office appointment
         Patient patient = new Patient(new Profile(firstName, lastName, dob));
-        
+        Provider provider = findProvider(npi);
         if (provider == null) {
             System.out.println("Provider not found.");
             return;
@@ -236,6 +261,50 @@ public class ClinicManager {
         int day = Integer.parseInt(parts[1]);
         int year = Integer.parseInt(parts[2]);
         return new Date(year, month, day);
+    }
+ // find docotor using npi method
+    private Doctor findProvider(String npi) {
+        for (Provider provider : providerList) {
+            if (provider instanceof Doctor && ((Doctor) provider).getNpi() == npi) {
+                return (Doctor) provider;
+            }
+        }
+        return null;
+    }
+    /**
+     * The main method creates a ClinicManager object and starts the clinic manager.
+     * @param args The command-line arguments.
+     */
+    private boolean isValidTimeslot(String slot) {
+        int slotNumber = Integer.parseInt(slot);
+        return slotNumber >= 1 && slotNumber <= 12;
+    }
+       /**
+     * Validates a date of birth.
+     * Ensures the date of birth is not in the future and is a valid calendar date.
+     *
+     * @param dob The date of birth to validate.
+     * @return true if the DOB is valid, false otherwise.
+     */
+    private boolean isValidDob(Date dob) {
+        // Check if the DOB is a valid date
+        if (!dob.isValid()) {
+
+            return false;
+        }
+
+        Calendar today = Calendar.getInstance();
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.set(dob.getYear(), dob.getMonth() - 1, dob.getDay());  // Month is 0-based in Calendar
+
+        if (dobCalendar.equals(today)) {
+            return false;
+        }
+        if (dobCalendar.after(today)) {
+            return false;
+        }
+
+        return true;
     }
 }
 
