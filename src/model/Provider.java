@@ -39,6 +39,7 @@ public abstract class Provider extends Person {
     public void setLocation(Location location) {
         this.location = location;
     }
+    
 
     /**
      * Abstract method that returns the provider's rate for seeing a patient.

@@ -1,8 +1,7 @@
 package model;
 
-import util.Date;
 import util.*;
-import util.List;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -89,34 +88,34 @@ public class ClinicManager {
                 String[] tokens = line.split("\\s+");
                 // Determine if the line is for a Doctor (D) or Technician (T)
                 if (tokens[0].equals("D")) {
-                    // Create a Doctor object
                     String firstName = tokens[1];
                     String lastName = tokens[2];
                     Date dob = parseDate(tokens[3]);
-                    String location = tokens[4];
-                    String specialty = tokens[5];
+                    Location location = Location.valueOf(tokens[4]);
+                    Specialty specialty = Specialty.valueOf(tokens[5]);
                     String npi = tokens[6];
-                    Profile doc = new Profile(firstName,lastName,dob);
-                    Doctor doctor = new Doctor(doc, location, specialty, npi);
+                    Profile profile = new Profile(firstName, lastName, dob);
+                    // Create a Doctor object with the parsed information
+                    Doctor doctor = new Doctor(profile, location, specialty, npi);
                     providerList.add(doctor);
 
                 } else if (tokens[0].equals("T")) {
-                    // Create a Technician object
                     String firstName = tokens[1];
                     String lastName = tokens[2];
                     Date dob = parseDate(tokens[3]);
-                    String location = tokens[4];
-                    int ratePerVisit = Integer.parseInt(tokens[5]);
-
+                    Location location = Location.valueOf(tokens[4]);
+                    int rate = Integer.parseInt(tokens[5]);
+                    Profile profile = new Profile(firstName, lastName, dob);
+                    Technician technician = new Technician(profile, location, rate);
                     // Create a Technician object with the parsed information
-                    Technician technician = new Technician(firstName, lastName, dob, location, ratePerVisit);
+                
                     providerList.add(technician);
                 }
             }
             fileScanner.close();
 
             // Sort providers by profile (assuming Provider implements Comparable)
-            providerList.sort();
+            Sort.provider(providerList);
             System.out.println("Providers loaded and sorted.");
 
         } catch (FileNotFoundException e) {
@@ -140,8 +139,18 @@ public class ClinicManager {
         String lastName = tokens[4];
         Date dob = parseDate(tokens[5]);
         int npi = Integer.parseInt(tokens[6]);
-
+        
         // Additional logic to create and validate an office appointment
+        Patient patient = new Patient(new Profile(firstName, lastName, dob));
+        
+        if (provider == null) {
+            System.out.println("Provider not found.");
+            return;
+        }
+        // Create an office appointment with the parsed information
+        Appointment appointment = new Appointment(appointmentDate, timeslot, patient, provider);
+        appointmentList.add(appointment);
+
         System.out.println("Office appointment scheduled.");
     }
 
