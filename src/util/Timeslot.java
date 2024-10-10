@@ -7,7 +7,7 @@ package util;
  * @author Your Name
  */
 public class Timeslot implements Comparable<Timeslot> {
-
+ 
     private int hour;     // Hour of the timeslot (0-23)
     private int minute;   // Minute of the timeslot (0-59)
 
@@ -73,9 +73,7 @@ public class Timeslot implements Comparable<Timeslot> {
         return Integer.compare(this.minute, other.minute);
     }
     public static Timeslot fromSlotNumber(int slotNumber) {
-        //The system shall provide 6 slots in the morning and afternoon, respectively, a total of 12 slots per weekday.
-//Each slot is 30 minutes, the first in the morning is 9:00 AM, and the first in the afternoon is 2:00 PM. The last
-//appointment is at 4:30 PM.
+       
         return switch (slotNumber) {
             case 1 -> new Timeslot(9, 0);
             case 2 -> new Timeslot(9, 30);

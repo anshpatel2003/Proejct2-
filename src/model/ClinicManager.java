@@ -18,7 +18,7 @@ public class ClinicManager {
 
     private final List<Appointment> appointmentList = new List<>();  // A list to manage appointments
     private final List<Provider> providerList = new List<>();  // List of providers
-
+    private final List<Person> PatientProfile = new List<>();  // List of patients
     /**
      * Starts the Clinic Manager by loading providers and processing commands.
      */
@@ -119,6 +119,10 @@ public class ClinicManager {
             // Sort providers by profile (assuming Provider implements Comparable)
             Sort.provider(providerList);
             System.out.println("Providers loaded and sorted.");
+            //print the provider list
+            for (Provider provider : providerList) {
+                System.out.println(provider);
+            }
 
         } catch (FileNotFoundException e) {
             System.out.println("Error: providers.txt not found.");
@@ -158,24 +162,41 @@ public class ClinicManager {
             System.out.println("Patient dob: " + dob + " is not a valid calendar date.");
             return;
         }
-        //check if appointment exists
-        for (Appointment appointment : appointmentList) {
-            if (appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
-                System.out.println("Appointment already exists.");
-                return;
-            }
-        }
-        // Additional logic to create and validate an office appointment
-        Patient patient = new Patient(new Profile(firstName, lastName, dob));
-        Provider provider = findProvider(npi);
+       
+          Provider provider = findProvider(npi);
         if (provider == null) {
             System.out.println("Provider not found.");
             return;
         }
+   
+
+        //check if the appominet with the same paitent profile, date and timeslot already exists
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getPatient().equals(patient) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
+                System.out.println("Appointment already exists.");
+                return;
+            }
+        }
+        //check if doctor is available for that slot
+       if(isAvailable((Doctor) provider, appointmentDate, timeslot)){
+           System.out.println("Doctor is not available for that slot");
+           return;
+           }
+      //check if patient is new, else add to patient list
+        if (isNewPatient(firstName, lastName, dob)) {
+            Profile profile = new Profile(firstName, lastName, dob);
+            Patient patient = new Patient(profile);
+            PatientProfile.add(patient);
+        }
+        else{
+            Patient patient = findPatient(firstName, lastName, dob);
+        }
+    
         // Create an office appointment with the parsed information
         Appointment appointment = new Appointment(appointmentDate, timeslot, patient, provider);
         appointmentList.add(appointment);
-
+        Visit visit = new Visit(appointment);
+        patient.addVisit(visit);
         System.out.println("Office appointment scheduled.");
     }
 
@@ -306,5 +327,34 @@ public class ClinicManager {
 
         return true;
     }
+
+    //make a method to ask if the patient is a new patient or not
+    public boolean isNewPatient(String firstName, String lastName, Date dob) {
+        for (Person person : PatientProfile) {
+            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDob().equals(dob)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    //make a method to find the patient in the list
+    public Patient findPatient(String firstName, String lastName, Date dob) {
+        for (Person person : PatientProfile) {
+            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDob().equals(dob)) {
+                return (Patient) person;
+            }
+        }
+        return null;
+    }
+    //make a method to check if docotor is aviable for that slot 
+    public boolean isAvailable(Doctor doctor, Date date, Timeslot timeslot) {
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getProvider().equals(doctor) && appointment.getDate().equals(date) && appointment.getTimeslot().equals(timeslot)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
 
