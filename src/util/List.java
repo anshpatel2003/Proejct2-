@@ -1,6 +1,6 @@
 package util;
 
-//import java.util.Iterator;
+import java.util.Iterator;
 
 /**
  * A generic list class that implements a resizable array to store elements of any type.

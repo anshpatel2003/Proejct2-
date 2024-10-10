@@ -68,6 +68,15 @@ public class ClinicManager {
             case "PC":
                 displayProviderCredits();
                 break;
+            case "PA":
+            handlePrintByAppointment();
+            case "PP":
+            handlePrintByPatient();
+            case "PL":
+            handlePrintByLocation();
+            case "PS": 
+            handlePrintBilling();
+
             case "Q":
                 System.out.println("Clinic Manager terminated.");
                 break;
@@ -134,10 +143,7 @@ public class ClinicManager {
      * @param tokens The command tokens.
      */
     private void handleOfficeAppointment(String[] tokens) {
-        if (tokens.length != 7) {
-            System.out.println("Invalid input for office appointment.");
-            return;
-        }
+      
         // Parse the date, time, patient info, and provider NPI
         Date appointmentDate = parseDate(tokens[1]);
         Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
@@ -162,23 +168,28 @@ public class ClinicManager {
             System.out.println("Patient dob: " + dob + " is not a valid calendar date.");
             return;
         }
-       
-          Provider provider = findProvider(npi);
-        if (provider == null) {
-            System.out.println("Provider not found.");
+        if (tokens.length != 7) {
+            System.out.println("Missing data tokens.");
             return;
         }
-   
+     
 
         //check if the appominet with the same paitent profile, date and timeslot already exists
+        //use list iterator to iterate through the list of appointments
         for (Appointment appointment : appointmentList) {
-            if (appointment.getPatient().equals(patient) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
+            if (appointment.getPatient().getProfile().getFirstName().equals(firstName) && appointment.getPatient().getProfile().getLastName().equals(lastName) && appointment.getPatient().getProfile().getDateOfBirth().equals(dob) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
                 System.out.println("Appointment already exists.");
                 return;
             }
         }
+        Provider provider = findProvider(npi);
+        if (provider == null) {
+            System.out.println( npi + " - provider doesn't exist.");
+            return;
+        }
+   
         //check if doctor is available for that slot
-       if(isAvailable((Doctor) provider, appointmentDate, timeslot)){
+       if(!isAvailable((Doctor) provider, appointmentDate, timeslot)){
            System.out.println("Doctor is not available for that slot");
            return;
            }
@@ -188,17 +199,15 @@ public class ClinicManager {
             Patient patient = new Patient(profile);
             PatientProfile.add(patient);
         }
-        else{
-            Patient patient = findPatient(firstName, lastName, dob);
-        }
-    
+        
+        Patient patient = findPatient(firstName, lastName, dob);
         // Create an office appointment with the parsed information
         Appointment appointment = new Appointment(appointmentDate, timeslot, patient, provider);
         appointmentList.add(appointment);
-        Visit visit = new Visit(appointment);
+        Visit visit = new Visit(0);
         patient.addVisit(visit);
-        System.out.println("Office appointment scheduled.");
-    }
+        Doctor doctor = (Doctor) provider;
+        System.out.println(appointment.getDate() + " " + appointment.getTimeslot() + " " + appointment.getPatient().getProfile() + " " + appointment.getProvider().getProfile() + provider.getLocation() + doctor.getSpecialty().name() + doctor.getNpi() +" booked.");    }
 
     /**
      * Handles scheduling an imaging appointment (T command).
@@ -271,6 +280,7 @@ public class ClinicManager {
         // Logic to display credits
     }
 
+
     /**
      * Parses a date from the string input in "MM/DD/YYYY" format.
      * @param dateString The date string to parse.
@@ -286,7 +296,7 @@ public class ClinicManager {
  // find docotor using npi method
     private Doctor findProvider(String npi) {
         for (Provider provider : providerList) {
-            if (provider instanceof Doctor && ((Doctor) provider).getNpi() == npi) {
+            if (provider instanceof Doctor && ((Doctor) provider).getNpi().equals(npi)) {
                 return (Doctor) provider;
             }
         }
@@ -331,7 +341,7 @@ public class ClinicManager {
     //make a method to ask if the patient is a new patient or not
     public boolean isNewPatient(String firstName, String lastName, Date dob) {
         for (Person person : PatientProfile) {
-            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDob().equals(dob)) {
+            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDateOfBirth().equals(dob)) {
                 return false;
             }
         }
@@ -340,7 +350,7 @@ public class ClinicManager {
     //make a method to find the patient in the list
     public Patient findPatient(String firstName, String lastName, Date dob) {
         for (Person person : PatientProfile) {
-            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDob().equals(dob)) {
+            if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDateOfBirth().equals(dob)) {
                 return (Patient) person;
             }
         }
@@ -355,6 +365,37 @@ public class ClinicManager {
         }
         return true;
     }
+
+    // handlePrintByAppointment();
+    /**
+     * Prints all appointments sorted by appointment time.
+     */
+    private void handlePrintByAppointment() {
+
+       Sort.appointment(appointmentList, 'd');
+        for (Appointment appointment : appointmentList) {
+            System.out.println(appointment);
+        }
+    }
+
+    /**
+     * Prints all appointments sorted by patient name.
+     */
+    private void handlePrintByPatient() {
+        appointmentList.printByPatient();
+    }
+
+    /**
+     * Prints all appointments sorted by provider location.
+     */
+    private void handlePrintByLocation() {
+        appointmentList.printByLocation();
+    }
+
+    private void handlePrintBilling() {
+        appointmentList.printBilling();
+    }
+   
 }
 
 
