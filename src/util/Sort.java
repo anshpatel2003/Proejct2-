@@ -23,9 +23,6 @@ public class Sort {
         if (key == 'd') {
             sortbydate(list);
         }
-        if(key == 'l'){
-            sortbyLocation(list);
-        }
         if(key == 'p'){
             sortbyPatient(list);
         }

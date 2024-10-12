@@ -19,6 +19,7 @@ public class ClinicManager {
     private final List<Appointment> appointmentList = new List<>();  // A list to manage appointments
     private final List<Provider> providerList = new List<>();  // List of providers
     private final List<Person> PatientProfile = new List<>();  // List of patients
+    private CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
     /**
      * Starts the Clinic Manager by loading providers and processing commands.
      */
@@ -119,8 +120,10 @@ public class ClinicManager {
                     Profile profile = new Profile(firstName, lastName, dob);
                     Technician technician = new Technician(profile, location, rate);
                     // Create a Technician object with the parsed information
-                
+                    
                     providerList.add(technician);
+                    technicianList.addTechnician(technician);
+
                 }
             }
             fileScanner.close();
@@ -224,10 +227,60 @@ public class ClinicManager {
         String firstName = tokens[3];
         String lastName = tokens[4];
         Date dob = parseDate(tokens[5]);
-        String roomType = tokens[6].toLowerCase();
-
-        // Additional logic to create and validate an imaging appointment
-        System.out.println("Imaging appointment scheduled.");
+        Radiology room = Radiology.valueOf(tokens[6].toUpperCase()); 
+        Technician technician = technicianList.getNextTechnician();
+        if (!appointmentDate.isValid()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is not a valid calendar date.");
+        } else if (appointmentDate.isTodayOrPast()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is today or a date before today");
+        } else if (appointmentDate.isWeekend()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is a Saturday or Sunday.");
+        } else if (!appointmentDate.SixMonths()) {
+            System.out.println("Appointment Date: " + appointmentDate + " is not within six months.");
+        }
+        if (!isValidTimeslot(tokens[2])) {
+            System.out.println(tokens[2] + " is not a valid time slot");
+            return;  // Stop if the timeslot is invalid
+        }
+        if (!isValidDob(dob)) {
+            System.out.println("Patient dob: " + dob + " is not a valid calendar date.");
+            return;
+        }
+        if (isNewPatient(firstName, lastName, dob)) {
+            Profile profile = new Profile(firstName, lastName, dob);
+            Patient patient = new Patient(profile);
+            PatientProfile.add(patient);
+        }
+        Patient patient = findPatient(firstName, lastName, dob);
+        if (patient == null) {
+            System.out.println("Patient not found.");
+            return;
+        }
+        // Initialize to find the next available technician using the circular list
+        Technician assignedTechnician = null;
+        Technician startingTechnician = technicianList.getNextTechnician();  // Get the first technician in rotation
+        Technician currentTechnician = startingTechnician;
+        // Loop through technicians in a circular fashion
+        do {
+            // Check if the technician is available for this timeslot and the imaging room
+            if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot, room)) {
+                assignedTechnician = currentTechnician;
+                break;
+            }
+            // Move to the next technician in the rotation
+            currentTechnician = technicianList.getNextTechnician();
+        } while (currentTechnician != startingTechnician);  // Stop when we’ve looped through all technicians
+        if (assignedTechnician == null) {
+            System.out.println("Error: No technician available for the requested timeslot and room.");
+            return;
+        }
+        // Create an imaging appointment with the parsed information
+        Imaging newAppointment = new Imaging(appointmentDate, timeslot, patient, technician, room);
+        appointmentList.add(newAppointment);
+        Visit visit = new Visit(technician.rate());
+        patient.addVisit(visit);
+        System.out.println(newAppointment.getDate() + " " + newAppointment.getTimeslot() + " " + newAppointment.getPatient().getProfile() + " " + newAppointment.getProvider().getProfile() + " " + room.name() + " booked.");
+       
     }
 
     /**
@@ -236,11 +289,40 @@ public class ClinicManager {
      */
     private void handleCancelAppointment(String[] tokens) {
         if (tokens.length != 7) {
-            System.out.println("Invalid input for cancellation.");
+            System.out.println("Invalid input for canceling.");
             return;
         }
-        // Parse the date, time, and patient info for cancellation
-        System.out.println("Appointment canceled.");
+        try {
+            Date appointmentDate = parseDate(tokens[1]);
+            Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
+            Profile patientProfile = new Profile(tokens[3], tokens[4], parseDate(tokens[5]));
+            Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, null);
+
+            // Check if the appointment exists in the appointment list
+            if (appointmentList.contains(dummyAppointment)) {
+                Patient patient =  findPatient(patientProfile.getFirstName(), patientProfile.getLastName(), patientProfile.getDateOfBirth());
+                if (patient != null) {
+        removeVisit(patient, dummyAppointment);
+                    appointmentList.remove(dummyAppointment);  // Remove the appointment from the list
+                    String cancellationMessage = String.format("%s %s %s %s has been canceled.",
+                            appointmentDate.toString(),
+                            timeslot.formatTime(),
+                            patientProfile.getFirstName() + " " + patientProfile.getLastName(),
+                            patientProfile.getDateOfBirth().toString());
+                    System.out.println(cancellationMessage);
+
+                }
+            } else {
+                String message = String.format("%s %s %s %s does not exist",
+                        appointmentDate.toString(),
+                        timeslot.formatTime(),
+                        patientProfile.getFirstName() + " " + patientProfile.getLastName(),
+                        patientProfile.getDateOfBirth().toString());
+                System.out.println(message);
+            }
+        } catch (Exception e) {
+            System.out.println("Error canceling appointment: " + e.getMessage());
+        }
     }
 
     /**
@@ -382,7 +464,10 @@ public class ClinicManager {
      * Prints all appointments sorted by patient name.
      */
     private void handlePrintByPatient() {
-        appointmentList.printByPatient();
+        Sort.appointment(appointmentList, 'p');
+        for (Appointment appointment : appointmentList) {
+            System.out.println(appointment);
+        }
     }
 
     /**
@@ -395,7 +480,62 @@ public class ClinicManager {
     private void handlePrintBilling() {
         appointmentList.printBilling();
     }
+
+    private void sortByLocation() {
+        for (int i = 0; i < appointmentList.size() - 1; i++) {
+            for (int j = 0; j < appointmentList.size() - 1 - i; j++) {
+                Appointment a1 = appointmentList.get(j);
+                Appointment a2 = appointmentList.get(j + 1);
+
+            } 
+    }
+
+
    
+}
+// Helper method to check technician availability for a specific date, timeslot, and imaging room
+private boolean isTechnicianAvailable(Technician technician, Date appointmentDate, Timeslot timeslot, Radiology room) {
+    // Check for conflicts in existing appointments for the same technician, timeslot, and room
+    for (Appointment appointment : appointmentList) {
+        if (appointment instanceof Imaging) {
+            Imaging imgApp = (Imaging) appointment;
+            if (imgApp.getProvider().equals(technician) && imgApp.getDate().equals(appointmentDate) && imgApp.getTimeslot().equals(timeslot) && imgApp.getRoom() == room) {
+                return false;  // Technician is busy at this timeslot and room
+            }
+        }
+    }
+    return true;  // Technician is available
+}
+ /**
+     * Removes the visit associated with the given appointment from the patient's record.
+     *
+     * @param patient The patient whose visit needs to be removed.
+     * @param appointment The appointment to be canceled.
+     * @return true if the visit was successfully removed, false otherwise.
+     */
+    private boolean removeVisit(Patient patient, Appointment appointment) {
+        Visit current = patient.getVisits();  // Get the head of the visit linked list
+        Visit previous = null;
+
+        // Traverse the linked list to find the visit to remove
+        while (current != null) {
+            if (current.getAppointment().equals(appointment)) {
+                if (previous == null) {
+                    // Removing the head of the list
+                    patient.setVisits(current.getNext());
+                } else {
+                    // Bypass the current node
+                    previous.setNext(current.getNext());
+                }
+                return true;  // Visit removed successfully
+            }
+            previous = current;
+            current = current.getNext();
+        }
+
+        return false;  // Visit not found
+    }
+
 }
 
 

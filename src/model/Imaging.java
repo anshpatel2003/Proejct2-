@@ -45,6 +45,15 @@ public class Imaging extends Appointment {
     }
 
     /**
+     * Returns the provider attending the imaging appointment.
+     *
+     * @return The provider attending the appointment.
+     */
+    public Person getProvider() {
+        return super.getProvider();
+    }
+
+    /**
      * Returns a string representation of the imaging appointment, including the room type.
      *
      * @return A string representing the imaging appointment details.
