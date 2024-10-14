@@ -1,6 +1,7 @@
 package util;
-
 import model.Technician;
+
+
 public class CircularTechnicianList {
     private TechnicianNode head;
     private TechnicianNode current;
@@ -20,14 +21,14 @@ public class CircularTechnicianList {
         TechnicianNode newNode = new TechnicianNode(technician);
         if (head == null) {
             head = newNode;
-            newNode.next = head;  // Pointing to itself to make it circular
+            newNode.next = head;
         } else {
             TechnicianNode temp = head;
-            while (temp.next != head) {  // Traverse to the last node
+            while (temp.next != head) {
                 temp = temp.next;
             }
-            temp.next = newNode;  // Set the new node at the end
-            newNode.next = head;  // Make it circular by pointing back to head
+            temp.next = newNode;
+            newNode.next = head;
         }
         if (current == null) {
             current = head;  // Initialize the current technician to the head of the list
@@ -44,8 +45,25 @@ public class CircularTechnicianList {
         return technician;
     }
 
-    // Method to check if the list is empty
+    // Method to reset the current technician to the head of the list
+    public void resetCurrentTechnician() {
+        current = head;
+    }
+
+    // Method to get the current technician
+    public Technician getCurrentTechnician() {
+        if (current == null) {
+            return null;
+        }
+        return current.technician;
+    }
+
+    // Method to check if the circular list is empty
     public boolean isEmpty() {
         return head == null;
     }
+
+
+   
+
 }

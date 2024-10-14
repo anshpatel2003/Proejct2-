@@ -49,44 +49,58 @@ public class ClinicManager {
      * @param tokens The array of strings representing the command parameters.
      */
     private void processCommand(String cmd, String[] tokens) {
-        switch (cmd) {
-            case "D":
-                handleOfficeAppointment(tokens);
-                break;
-            case "T":
-                handleImagingAppointment(tokens);
-                break;
-            case "C":
-                handleCancelAppointment(tokens);
-                break;
-            case "R":
-                handleRescheduleAppointment(tokens);
-                break;
-            case "PO":
-                displayOfficeAppointments();
-                break;
-            case "PI":
-                displayImagingAppointments();
-                break;
-            case "PC":
-                displayProviderCredits();
-                break;
-            case "PA":
-            handlePrintByAppointment();
-            case "PP":
-            handlePrintByPatient();
-            case "PL":
-            handlePrintByLocation();
-            case "PS": 
-            handlePrintBilling();
-
-            case "Q":
-                System.out.println("Clinic Manager terminated.");
-                break;
-            default:
-                System.out.println("Invalid command.");
-        }
+    if ("D".equals(cmd)) {
+        handleOfficeAppointment(tokens);
     }
+    if("T".equals(cmd)){
+        handleImagingAppointment(tokens);
+    }
+    if("C".equals(cmd)){
+        handleCancelAppointment(tokens);
+    }
+    if("R".equals(cmd)){
+        handleRescheduleAppointment(tokens);
+
+    }
+    if("PO".equals(cmd)){
+        displayOfficeAppointments();
+    }
+    if("PI".equals(cmd)){
+        displayImagingAppointments();
+    }
+    if("PC".equals(cmd)){
+        displayProviderCredits();
+    }
+    if("PA".equals(cmd)){
+        handlePrintByAppointment();
+    }
+    if("PP".equals(cmd)){
+        handlePrintByPatient();
+    }
+    if("PL".equals(cmd)){
+        handlePrintByLocation();
+    }
+    if("PS".equals(cmd)){
+        handlePrintBilling();
+    }
+    if("Q".equals(cmd)){
+        System.out.println("Clinic Manager terminated.");
+        System.exit(0);
+    }
+    else{
+        System.out.println("Invalid command.");
+    }
+
+    
+    }
+            
+           
+           
+         
+           
+          
+        
+    
 
     /**
      * Loads providers (doctors and technicians) from the file (providers.txt) and adds them to the provider list.
@@ -124,7 +138,8 @@ public class ClinicManager {
                     // Create a Technician object with the parsed information
                     
                     providerList.add(technician);
-                    technicianList.addTechnician(technician);
+                   
+                   
 
                 }
             }
@@ -137,6 +152,8 @@ public class ClinicManager {
             for (Provider provider : providerList) {
                 System.out.println(provider);
             }
+            LoadTechinicianList();
+
 
         } catch (FileNotFoundException e) {
             System.out.println("Error: providers.txt not found.");
@@ -211,7 +228,7 @@ public class ClinicManager {
         appointmentList.add(appointment);
         Visit visit = new Visit(((Doctor) provider).rate());
         patient.addVisit(visit);
-        visitList.add(visit);
+       
         Doctor doctor = (Doctor) provider;
         System.out.println(appointment.getDate() + " " + appointment.getTimeslot() + " " + appointment.getPatient().getProfile() + " " + appointment.getProvider().getProfile() + provider.getLocation() + doctor.getSpecialty().name() + doctor.getNpi() +" booked.");    }
 
@@ -642,6 +659,48 @@ private boolean isTechnicianAvailable(Technician technician, Date appointmentDat
         return false;  // Visit not found
     }
 
+    private void LoadTechinicianList(){
+        System.out.println("Rotation list for the technicians.");
+                        // i want a specfic order to list, so add if statemnt that check the name of the technician and add to the list
+                
+                        //JENNY PATEL (BRIDGEWATER) --> MONICA FOX (BRIDGEWATER) --> CHARLES BROWN (BRIDGEWATER) --> FRANK LIN (PISCATAWAY) --> BEN JERRY (PISCATAWAY) --> GARY JOHNSON (PISCATAWAY)
+                    Technician jenny = findTechician("JENNY");
+                    Technician monica = findTechician("MONICA");
+                    Technician charles = findTechician("CHARLES");
+                    Technician frank = findTechician("FRANK");
+                    Technician ben = findTechician("BEN");
+                    Technician gary = findTechician("GARY");
+                    technicianList.addTechnician(jenny);
+                    technicianList.addTechnician(monica);
+                    technicianList.addTechnician(charles);
+                    technicianList.addTechnician(frank);
+                    technicianList.addTechnician(ben);
+                    technicianList.addTechnician(gary);
+                    // print the list like //JENNY PATEL (BRIDGEWATER) --> MONICA FOX (BRIDGEWATER) --> CHARLES BROWN (BRIDGEWATER) --> FRANK LIN (PISCATAWAY) --> BEN JERRY (PISCATAWAY) --> GARY JOHNSON (PISCATAWAY)
+                    for (int i = 0; i < 5; i++) {
+                        Technician currentTechnician = technicianList.getCurrentTechnician();
+                        System.out.print(currentTechnician.getProfile().getFirstName() + " " + currentTechnician.getProfile().getLastName() + " (" + currentTechnician.getLocation().name() + ")-->");
+                        technicianList.getNextTechnician();
+                    }
+                    Technician currentTechnician = technicianList.getCurrentTechnician();
+                    System.out.println(currentTechnician.getProfile().getFirstName() + " " + currentTechnician.getProfile().getLastName() + " (" + currentTechnician.getLocation().name() + ")");
+
+
+
+        }
+     
+       
+
+    private Technician findTechician(String name) {
+        for (Provider provider : providerList) {
+            if (provider instanceof Technician && provider.getProfile().getFirstName().equals(name)) {
+                return (Technician) provider;
+            }
+        }
+        return null;
+    }
+
+    
 }
 
 

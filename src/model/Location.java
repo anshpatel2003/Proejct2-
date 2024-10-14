@@ -49,6 +49,10 @@ public enum Location {
         return zip;
     }
 
+    public String getName() {
+        return name();
+    }
+
     /**
      * Returns a string representation of the location in the format:
      * "LocationName (County, ZipCode)".
