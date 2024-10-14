@@ -101,5 +101,21 @@ public class Sort {
         }
     }
 
+    public static void patient(List<Person> list) {
+        // Basic bubble sort (can be optimized or changed to another sort)
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = 0; j < list.size() - 1 - i; j++) {
+                Person p1 = list.get(j);
+                Person p2 = list.get(j + 1);
+
+                // Assuming provider comparison is based on their profile
+                if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
+                    list.set(j, p2);  // Swap
+                    list.set(j + 1, p1);
+                }
+            }
+        }
+    }
+
    
 }

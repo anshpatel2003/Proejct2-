@@ -425,8 +425,32 @@ public class ClinicManager {
      * Displays the expected credit amounts for each provider.
      */
     private void displayProviderCredits() {
-        
-        System.out.println("Displaying provider credits.");
+        for (Provider provider : providerList) {
+            if (provider instanceof Doctor) {
+                Doctor doctor = (Doctor) provider;
+                int totalCharge = 0;
+                for (Appointment appointment : appointmentList) {
+                    if (appointment.getProvider().equals(doctor)) {
+                        totalCharge += doctor.rate();
+                    }
+                }
+                if (totalCharge > 0) {
+                    System.out.println(doctor.getProfile().getFirstName() + " " + doctor.getProfile().getLastName() + " owes $" + totalCharge);
+            }
+        }
+        if(provider instanceof Technician){
+            Technician technician = (Technician) provider;
+            int totalCharge = 0;
+            for (Appointment appointment : appointmentList) {
+                if (appointment.getProvider().equals(technician)) {
+                    totalCharge += technician.rate();
+                }
+            }
+            if (totalCharge > 0) {
+                System.out.println(technician.getProfile().getFirstName() + " " + technician.getProfile().getLastName() + " owes $" + totalCharge);
+        }
+      } 
+     } 
         // Logic to display credits
     }
 
@@ -547,9 +571,29 @@ public class ClinicManager {
             System.out.println(appointment);
         }
     }
-
+ /**
+     * Prints billing statements for all patients.
+     * The total charge is calculated based on the visits stored in the medical record.
+     */
     private void handlePrintBilling() {
-        appointmentList.printBilling();
+        if(appointmentList.isEmpty()){
+            System.out.println("No patients found for billing");
+            return;
+        }
+    //sort the patients by names, if name is equal compare date 
+    Sort.patient(PatientProfile);  
+       for(Person patient : PatientProfile){
+              if(patient instanceof Patient){
+                Patient p = (Patient) patient;
+                Visit current = p.getVisits();
+                int totalCharge = 0;
+                while(current != null){
+                     totalCharge += current.getCharge();
+                     current = current.getNext();
+                }
+                System.out.println(p.getProfile().getFirstName() + " " + p.getProfile().getLastName() + " owes $" + totalCharge);
+              }
+       }
     }
 
     private void sortByLocation() {
