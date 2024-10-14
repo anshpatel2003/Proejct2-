@@ -35,6 +35,9 @@ public class Doctor extends Provider {
         return specialty;
     }
 
+    public Location geLocation() {
+        return super.getLocation();
+    }
     /**
      * Sets the specialty of the doctor.
      *

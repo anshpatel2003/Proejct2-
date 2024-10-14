@@ -19,7 +19,6 @@ public class ClinicManager {
     private final List<Appointment> appointmentList = new List<>();  // A list to manage appointments
     private final List<Provider> providerList = new List<>();  // List of providers
     private final List<Person> PatientProfile = new List<>();  // List of patients
-    private final List<Visit> visitList = new List<>();  // List of visits
 
     private CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
 
@@ -398,7 +397,7 @@ public class ClinicManager {
      */
     private void displayOfficeAppointments() {
         System.out.println("Displaying office appointments.");
-        sortByLocation();
+        Sort.sortbyLocation(providerList);;
         for (Appointment appointment : appointmentList) {
             if (appointment instanceof Appointment) {
                 System.out.println(appointment);
@@ -412,7 +411,7 @@ public class ClinicManager {
      * Displays the list of imaging appointments ordered by location.
      */
     private void displayImagingAppointments() {
-        sortByLocation(); 
+       Sort.sortbyLocation(providerList);
         for (Appointment appointment : appointmentList) {
             if (appointment instanceof Imaging) {
                 System.out.println(appointment);
@@ -566,7 +565,7 @@ public class ClinicManager {
      * Prints all appointments sorted by provider location.
      */
     private void handlePrintByLocation() {
-       sortByLocation();
+       Sort.sortbyLocation(providerList);
         for (Appointment appointment : appointmentList) {
             System.out.println(appointment);
         }
@@ -596,18 +595,10 @@ public class ClinicManager {
        }
     }
 
-    private void sortByLocation() {
-        for (int i = 0; i < appointmentList.size() - 1; i++) {
-            for (int j = 0; j < appointmentList.size() - 1 - i; j++) {
-                Appointment a1 = appointmentList.get(j);
-                Appointment a2 = appointmentList.get(j + 1);
-
-            } 
-    }
 
 
    
-}
+
 // Helper method to check technician availability for a specific date, timeslot, and imaging room
 private boolean isTechnicianAvailable(Technician technician, Date appointmentDate, Timeslot timeslot, Radiology room) {
     // Check for conflicts in existing appointments for the same technician, timeslot, and room

@@ -50,6 +50,9 @@ public class Technician extends Provider {
         this.ratePerVisit = ratePerVisit;
     }
 
+    public Location getLocation() {
+        return super.getLocation();
+    }   
     /**
      * Returns a string representation of the technician, including the profile, location, and rate per visit.
      *
