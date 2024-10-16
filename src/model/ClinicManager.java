@@ -92,13 +92,6 @@ public class ClinicManager {
 
     
     }
-            
-           
-           
-         
-           
-          
-        
     
 
     /**
@@ -319,7 +312,7 @@ public class ClinicManager {
         do {
             Location location = ((Technician) currentTechnician).getLocation();
             // Check if the technician is available for this timeslot and the imaging room
-            if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot) && isRoomAvailable(room, location)) {
+            if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot) && isRoomAvailable(room, location, appointmentDate, timeslot)) {
                 assignedTechnician = currentTechnician;
                 break;
             }
@@ -734,9 +727,7 @@ public class ClinicManager {
 
                     
 
-        }
-     
-       
+        }      
 
     private Technician findTechician(String name) {
         for (Provider provider : providerList) {
@@ -746,7 +737,6 @@ public class ClinicManager {
         }
         return null;
     }
-
     private boolean isValidRoom(String room) {
         try {
             Radiology.valueOf(room.toUpperCase());
@@ -756,7 +746,7 @@ public class ClinicManager {
         }
     }
 
-    private boolean isRoomAvailable(Radiology room, Location location) {
+    private boolean isRoomAvailable(Radiology room, Location location, Date date, Timeslot timeslot) {
        
         for (Appointment appointment : appointmentList) {
           // check if the room on that date and time is avaible or not at the given location 
@@ -764,7 +754,7 @@ public class ClinicManager {
                 Imaging imgApp = (Imaging) appointment;
                 Provider provider = (Provider) imgApp.getProvider();
 
-                if (imgApp.getRoom() == room && imgApp.getDate().equals(appointment.getDate()) && imgApp.getTimeslot().equals(appointment.getTimeslot()) && provider.getLocation() == location) {
+                if (imgApp.getRoom() == room && imgApp.getDate().equals(date) && imgApp.getTimeslot().equals(timeslot) && provider.getLocation() == location) {
                     return false;  // Room is busy at this timeslot
                 }
             }
