@@ -102,19 +102,7 @@ public class Sort {
     }
 
 
-    public static void sortProviders(List<Provider> list){
-        for (int i = 0; i < list.size() - 1; i++) {
-            for (int j = 0; j < list.size() - 1 - i; j++) {
-                Provider p1 = list.get(j);
-                Provider p2 = list.get(j + 1);
-               
-                if (p1.getLocation().compareTo(p2.getLocation()) > 0) {
-                    list.set(j, p2);  // Swap
-                    list.set(j + 1, p1);
-                }
-            }
-        }
-    }
+    
 //ordered by county/date/time.
     public static void sortbyLocation(List<Appointment> list,List<Provider> providerList) {
         for (int i = 0; i < list.size() - 1; i++) {

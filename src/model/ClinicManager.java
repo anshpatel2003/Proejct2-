@@ -95,8 +95,9 @@ public class ClinicManager {
     
 
     /**
-     * Loads providers (doctors and technicians) from the file (providers.txt) and adds them to the provider list.
+     * Loads providers from the file "providers.txt".
      */
+
     private void loadProviders() {
         try {
             File providerFile = new File("providers.txt");
@@ -284,8 +285,7 @@ public class ClinicManager {
 
             Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
 
-        //check if the appominet with the same paitent profile, date and timeslot already exists
-        //use list iterator to iterate through the list of appointments
+       
         for (Appointment appointment : appointmentList) {
             if (appointment.getPatient().getProfile().getFirstName().equals(firstName) && appointment.getPatient().getProfile().getLastName().equals(lastName) && appointment.getPatient().getProfile().getDateOfBirth().equals(dob) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
                 
@@ -303,7 +303,7 @@ public class ClinicManager {
             System.out.println("Patient not found.");
             return;
         }
-        // Initialize to find the next available technician using the circular list
+       
         Technician assignedTechnician = null;
         Technician startingTechnician = technicianList.getCurrentTechnician();
         Technician currentTechnician = startingTechnician;
@@ -580,7 +580,13 @@ public class ClinicManager {
         return true;
     }
 
-    //make a method to ask if the patient is a new patient or not
+    /**
+     * Check if the patient is new or not
+     * @param firstName The first name of the patient.
+     * @param lastName The last name of the patient.
+     * @param dob The date of birth of the patient.
+     * @return true if the patient is new, false otherwise.
+     */
     public boolean isNewPatient(String firstName, String lastName, Date dob) {
         for (Person person : PatientProfile) {
             if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDateOfBirth().equals(dob)) {
@@ -589,7 +595,13 @@ public class ClinicManager {
         }
         return true;
     }
-    //make a method to find the patient in the list
+    /**
+     * Find a patient in the patient list.
+     * @param firstName The first name of the patient.
+     * @param lastName The last name of the patient.
+     * @param dob The date of birth of the patient.
+     * @return The patient object if found, null otherwise.
+     */
     public Patient findPatient(String firstName, String lastName, Date dob) {
         for (Person person : PatientProfile) {
             if (person.getProfile().getFirstName().equals(firstName) && person.getProfile().getLastName().equals(lastName) && person.getProfile().getDateOfBirth().equals(dob)) {
@@ -598,7 +610,14 @@ public class ClinicManager {
         }
         return null;
     }
-    //make a method to check if docotor is aviable for that slot 
+    
+    /**
+     * Check if the doctor is available for the given date and timeslot.
+     * @param doctor The doctor to check availability for.
+     * @param date The date of the appointment.
+     * @param timeslot The timeslot of the appointment.
+     * @return true if the doctor is available, false otherwise.
+     */
     public boolean isAvailable(Doctor doctor, Date date, Timeslot timeslot) {
         for (Appointment appointment : appointmentList) {
             if (appointment.getProvider().equals(doctor) && appointment.getDate().equals(date) && appointment.getTimeslot().equals(timeslot)) {
@@ -608,10 +627,9 @@ public class ClinicManager {
         return true;
     }
 
-    // handlePrintByAppointment();
-    /**
-     * Prints all appointments sorted by appointment time.
-     */
+   /**
+    * Prints all appointments sorted by date/time/provider.
+    */
     private void handlePrintByAppointment() {
 
        Sort.appointment(appointmentList, 'd');
@@ -665,7 +683,7 @@ public class ClinicManager {
             return;
         }
 
-    //sort the patients by names, if name is equal compare date 
+    
     Sort.patient(PatientProfile);  
     System.out.println("** Billing statement ordered by patient. ** ");
        for(Person patient : PatientProfile){
@@ -690,7 +708,13 @@ public class ClinicManager {
 
 
 
-   
+   /**
+    * Check if the technician is available for the given date and timeslot.
+    * @param technician The technician to check availability for.
+    * @param appointmentDate The date of the appointment.
+    * @param timeslot   The timeslot of the appointment. 
+    * @return
+    */
 
  private boolean isTechnicianAvailable(Technician technician, Date appointmentDate, Timeslot timeslot) {
     // Check for conflicts in existing appointments for the same technician, timeslot, and room
@@ -708,7 +732,10 @@ public class ClinicManager {
     return true;  // Technician is available
 }
  
-
+/**
+ * Load the technician list in a specific order.
+ *
+ */
     private void LoadTechinicianList(){
         System.out.println("Rotation list for the technicians.");
                         // i want a specfic order to list, so add if statemnt that check the name of the technician and add to the list
@@ -738,6 +765,12 @@ public class ClinicManager {
 
         }      
 
+       /**
+        * Find a technician by name.
+        * @param name The name of the technician.
+        * @return The technician object if found, null otherwise.
+        */
+
     private Technician findTechician(String name) {
         for (Provider provider : providerList) {
             if (provider instanceof Technician && provider.getProfile().getFirstName().equals(name)) {
@@ -746,6 +779,12 @@ public class ClinicManager {
         }
         return null;
     }
+
+    /**
+     * Check if the room is valid.
+     * @param room The room to check.
+     * @return true if the room is valid, false otherwise.
+     */
     private boolean isValidRoom(String room) {
         try {
             Radiology.valueOf(room.toUpperCase());
@@ -755,6 +794,14 @@ public class ClinicManager {
         }
     }
 
+    /**
+     * Check if the room is available for the given date and timeslot.
+     * @param room The room to check availability for.
+     * @param location The location of the room.
+     * @param date The date of the appointment.
+     * @param timeslot The timeslot of the appointment.
+     * @return true if the room is available, false otherwise.
+     */
     private boolean isRoomAvailable(Radiology room, Location location, Date date, Timeslot timeslot) {
        
         for (Appointment appointment : appointmentList) {
