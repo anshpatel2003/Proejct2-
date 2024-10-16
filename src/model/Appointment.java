@@ -105,6 +105,7 @@ public class Appointment implements Comparable<Appointment> {
      */
     @Override
     public String toString() {
+        //2/28/2025 9:00 AM John Doe 12/13/1989 [ANDREW PATEL 1/21/1989, BRIDGEWATER, Somerset 08807][FAMILY, #01] booked.
         return String.format("%s %s %s %s",
                 date.toString(),
                 formatTime(),
@@ -115,6 +116,7 @@ public class Appointment implements Comparable<Appointment> {
         );
     }
 
+  
     /**
      * Helper method to format the time in 12-hour format with AM/PM notation.
      *

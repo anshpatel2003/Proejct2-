@@ -80,7 +80,7 @@ public class Sort {
             for (int j = 0; j < list.size() - 1 - i; j++) {
                 Appointment a1 = list.get(j);
                 Appointment a2 = list.get(j + 1);
-
+                
                 // Assuming appointment comparison is based on their date
                 if (a1.getPatient().getProfile().compareTo(a2.getPatient().getProfile()) > 0) {
                     list.set(j, a2);  // Swap
@@ -101,17 +101,41 @@ public class Sort {
         }
     }
 
-    public static void sortbyLocation(List<Provider> list){
+
+    public static void sortProviders(List<Provider> list){
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = 0; j < list.size() - 1 - i; j++) {
                 Provider p1 = list.get(j);
                 Provider p2 = list.get(j + 1);
-
+                
                 // Assuming provider comparison is based on their profile
                 if (p1.getLocation().compareTo(p2.getLocation()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);
                 }
+            }
+        }
+    }
+
+    public static void sortbyLocation(List<Appointment> list,List<Provider> providerList) {
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = 0; j < list.size() - 1 - i; j++) {
+                Appointment a1 = list.get(j);
+                Appointment a2 = list.get(j + 1);
+                Provider p1 = null;
+                Provider p2 = null;
+                for(Provider p:providerList){
+                    if(p.getProfile().equals(a1.getProvider().getProfile())){
+                        p1 = p;
+                    }
+                    if(p.getProfile().equals(a2.getProvider().getProfile())){
+                        p2 = p;
+                    }
+                }
+               if(p1.getLocation().compareTo(p2.getLocation()) > 0){
+                   list.set(j, a2);  // Swap
+                   list.set(j + 1, a1);
+               }
             }
         }
     }

@@ -51,4 +51,6 @@ public class Visit {
     public String toString() {
         return "Visit [Charge=" + charge + "]";
     }
+
+   
 }
