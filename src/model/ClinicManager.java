@@ -152,6 +152,7 @@ public class ClinicManager {
                 System.out.println(provider);
             }
             LoadTechinicianList();
+            technicianList.resetCurrentTechnician();
 
 
         } catch (FileNotFoundException e) {
@@ -208,7 +209,7 @@ public class ClinicManager {
         for (Appointment appointment : appointmentList) {
             if (appointment.getPatient().getProfile().getFirstName().equals(firstName) && appointment.getPatient().getProfile().getLastName().equals(lastName) && appointment.getPatient().getProfile().getDateOfBirth().equals(dob) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
                 
-                System.out.println(appointment.getPatient().toString()+ " jasam existing appointment at the same time slot.");
+                System.out.println(appointment.getPatient().toString()+ " has an existing appointment at the same time slot.");
                 return;
             }
         }
@@ -237,7 +238,6 @@ public class ClinicManager {
         Visit visit = new Visit(((Doctor) provider).rate());
         patient.addVisit(visit);
        
-        Doctor doctor = (Doctor) provider;
         System.out.println(appointment.toString() + " booked.");
 
     }
@@ -257,8 +257,10 @@ public class ClinicManager {
         String firstName = tokens[3];
         String lastName = tokens[4];
         Date dob = parseDate(tokens[5]);
-        Radiology room = Radiology.valueOf(tokens[6].toUpperCase()); 
-        Technician technician = technicianList.getNextTechnician();
+        if(!isValidRoom(tokens[6])){
+            System.out.println(tokens[6] + " - imaging service not provided");
+            return;
+        }
         if (!appointmentDate.isValid()) {
             System.out.println("Appointment Date: " + appointmentDate + " is not a valid calendar date.");
         } else if (appointmentDate.isTodayOrPast()) {
@@ -285,9 +287,19 @@ public class ClinicManager {
             return;
         }
         else{
+            Radiology room = Radiology.valueOf(tokens[6].toUpperCase()); 
+
             Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
 
-
+        //check if the appominet with the same paitent profile, date and timeslot already exists
+        //use list iterator to iterate through the list of appointments
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getPatient().getProfile().getFirstName().equals(firstName) && appointment.getPatient().getProfile().getLastName().equals(lastName) && appointment.getPatient().getProfile().getDateOfBirth().equals(dob) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
+                
+                System.out.println(appointment.getPatient().toString()+ " has an existing appointment at the same time slot.");
+                return;
+            }
+        }
         if (isNewPatient(firstName, lastName, dob)) {
             Profile profile = new Profile(firstName, lastName, dob);
             Patient patient = new Patient(profile);
@@ -300,12 +312,14 @@ public class ClinicManager {
         }
         // Initialize to find the next available technician using the circular list
         Technician assignedTechnician = null;
-        Technician startingTechnician = technicianList.getNextTechnician();  // Get the first technician in rotation
+        Technician startingTechnician = technicianList.getCurrentTechnician();
         Technician currentTechnician = startingTechnician;
+        
         // Loop through technicians in a circular fashion
         do {
+            Location location = ((Technician) currentTechnician).getLocation();
             // Check if the technician is available for this timeslot and the imaging room
-            if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot, room)) {
+            if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot) && isRoomAvailable(room, location)) {
                 assignedTechnician = currentTechnician;
                 break;
             }
@@ -313,16 +327,17 @@ public class ClinicManager {
             currentTechnician = technicianList.getNextTechnician();
         } while (currentTechnician != startingTechnician);  // Stop when we’ve looped through all technicians
         if (assignedTechnician == null) {
-            System.out.println("Error: No technician available for the requested timeslot and room.");
+            System.out.println("Cannot find an available technician at all locations for " + room.name() + " at slot " + tokens[2]);
+            startingTechnician = technicianList.gethead();
             return;
         }
         // Create an imaging appointment with the parsed information
-        Imaging newAppointment = new Imaging(appointmentDate, timeslot, patient, technician, room);
+        Imaging newAppointment = new Imaging(appointmentDate, timeslot, patient, assignedTechnician, room);
         appointmentList.add(newAppointment);
-        Visit visit = new Visit(technician.rate());
+        Visit visit = new Visit(assignedTechnician.rate());
         patient.addVisit(visit);
-        System.out.println(newAppointment.getDate() + " " + newAppointment.getTimeslot() + " " + newAppointment.getPatient().getProfile() + " " + newAppointment.getProvider().getProfile() + " " + room.name() + " booked.");
-       
+        System.out.println(newAppointment.toString() + " booked.");
+        technicianList.getNextTechnician();
     }
     }
     /**
@@ -330,15 +345,15 @@ public class ClinicManager {
      * @param tokens The command tokens.
      */
     private void handleCancelAppointment(String[] tokens) {
-        if (tokens.length != 7) {
-            System.out.println("Invalid input for canceling.");
+        if (tokens.length != 6) {
+            System.out.println("Missing data tokens.");
             return;
         }
        
             Date appointmentDate = parseDate(tokens[1]);
             Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
             Patient patientProfile = new Patient(new Profile(tokens[3], tokens[4], parseDate(tokens[5])));
-            Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, null);
+            Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, provider);
             
             // Check if the appointment exists in the appointment list
             if (appointmentList.contains(dummyAppointment)) {
@@ -357,7 +372,7 @@ public class ClinicManager {
 
                 }
             } else {
-                String message = String.format("%s %s %s %s does not exist",
+                String message = String.format("%s %s %s %s - appointment does not exist",
                         appointmentDate.toString(),
                         timeslot.formatTime(),
                         patientProfile.getProfile().getFirstName() + " " + patientProfile.getProfile().getLastName(),
@@ -675,14 +690,16 @@ public class ClinicManager {
 
    
 
-// Helper method to check technician availability for a specific date, timeslot, and imaging room
-private boolean isTechnicianAvailable(Technician technician, Date appointmentDate, Timeslot timeslot, Radiology room) {
+ private boolean isTechnicianAvailable(Technician technician, Date appointmentDate, Timeslot timeslot) {
     // Check for conflicts in existing appointments for the same technician, timeslot, and room
     for (Appointment appointment : appointmentList) {
         if (appointment instanceof Imaging) {
             Imaging imgApp = (Imaging) appointment;
-            if (imgApp.getProvider().equals(technician) && imgApp.getDate().equals(appointmentDate) && imgApp.getTimeslot().equals(timeslot) && imgApp.getRoom() == room) {
-                return false;  // Technician is busy at this timeslot and room
+            if (imgApp.getProvider().equals(technician) &&
+                imgApp.getDate().equals(appointmentDate) &&
+                imgApp.getTimeslot().equals(timeslot)
+                ) {
+                return false;  // Technician or room is busy at this timeslot
             }
         }
     }
@@ -707,7 +724,6 @@ private boolean isTechnicianAvailable(Technician technician, Date appointmentDat
                     technicianList.addTechnician(frank);
                     technicianList.addTechnician(ben);
                     technicianList.addTechnician(gary);
-                    // print the list like //JENNY PATEL (BRIDGEWATER) --> MONICA FOX (BRIDGEWATER) --> CHARLES BROWN (BRIDGEWATER) --> FRANK LIN (PISCATAWAY) --> BEN JERRY (PISCATAWAY) --> GARY JOHNSON (PISCATAWAY)
                     for (int i = 0; i < 5; i++) {
                         Technician currentTechnician = technicianList.getCurrentTechnician();
                         System.out.print(currentTechnician.getProfile().getFirstName() + " " + currentTechnician.getProfile().getLastName() + " (" + currentTechnician.getLocation().name() + ")-->");
@@ -716,7 +732,7 @@ private boolean isTechnicianAvailable(Technician technician, Date appointmentDat
                     Technician currentTechnician = technicianList.getCurrentTechnician();
                     System.out.println(currentTechnician.getProfile().getFirstName() + " " + currentTechnician.getProfile().getLastName() + " (" + currentTechnician.getLocation().name() + ")");
 
-
+                    
 
         }
      
@@ -731,7 +747,33 @@ private boolean isTechnicianAvailable(Technician technician, Date appointmentDat
         return null;
     }
 
-    
+    private boolean isValidRoom(String room) {
+        try {
+            Radiology.valueOf(room.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private boolean isRoomAvailable(Radiology room, Location location) {
+       
+        for (Appointment appointment : appointmentList) {
+          // check if the room on that date and time is avaible or not at the given location 
+            if (appointment instanceof Imaging) {
+                Imaging imgApp = (Imaging) appointment;
+                Provider provider = (Provider) imgApp.getProvider();
+
+                if (imgApp.getRoom() == room && imgApp.getDate().equals(appointment.getDate()) && imgApp.getTimeslot().equals(appointment.getTimeslot()) && provider.getLocation() == location) {
+                    return false;  // Room is busy at this timeslot
+                }
+            }
+        }
+        return true;  // Technician is available
+    }
+
+   
 }
+
 
 

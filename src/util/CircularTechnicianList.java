@@ -40,9 +40,8 @@ public class CircularTechnicianList {
         if (current == null) {
             return null;
         }
-        Technician technician = current.technician;
-        current = current.next;  // Move to the next technician in the rotation
-        return technician;
+        current = current.next;
+        return current.technician;
     }
 
     // Method to reset the current technician to the head of the list
@@ -63,7 +62,9 @@ public class CircularTechnicianList {
         return head == null;
     }
 
-
+    public Technician gethead(){
+        return head.technician;
+    }
    
 
 }
