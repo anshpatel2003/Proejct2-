@@ -137,7 +137,7 @@ public class ClinicManager {
             }
             fileScanner.close();
 
-            // Sort providers by profile (assuming Provider implements Comparable)
+            
             Sort.provider(providerList);
             System.out.println("Providers loaded and sorted.");
             //print the provider list
@@ -342,11 +342,11 @@ public class ClinicManager {
             System.out.println("Missing data tokens.");
             return;
         }
-       
+
             Date appointmentDate = parseDate(tokens[1]);
             Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
             Patient patientProfile = new Patient(new Profile(tokens[3], tokens[4], parseDate(tokens[5])));
-            Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, provider);
+            Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, null);
             
             // Check if the appointment exists in the appointment list
             if (appointmentList.contains(dummyAppointment)) {
@@ -356,7 +356,7 @@ public class ClinicManager {
                     patient.removeVisit(Visit);
 
                     appointmentList.remove(dummyAppointment);  // Remove the appointment from the list
-                    String cancellationMessage = String.format("%s %s %s %s has been canceled.",
+                    String cancellationMessage = String.format("%s %s %s %s - appointment has been canceled.",
                             appointmentDate.toString(),
                             timeslot.formatTime(),
                             patientProfile.getProfile().getFirstName() + " " + patientProfile.getProfile().getLastName(),
@@ -365,7 +365,7 @@ public class ClinicManager {
 
                 }
             } else {
-                String message = String.format("%s %s %s %s - appointment does not exist",
+                String message = String.format("%s %s %s %s - appointment does not exist.",
                         appointmentDate.toString(),
                         timeslot.formatTime(),
                         patientProfile.getProfile().getFirstName() + " " + patientProfile.getProfile().getLastName(),
@@ -382,7 +382,7 @@ public class ClinicManager {
     private void handleRescheduleAppointment(String[] tokens) {
        
         if (tokens.length != 7) {
-            System.out.println("Invalid input for rescheduling.");
+            System.out.println(" Missing Data tokens");
             return;
         }
         Date appointmentDate = parseDate(tokens[1]);
@@ -421,21 +421,17 @@ public class ClinicManager {
             appointmentList.add(newAppointment);
 
             String newapp = String.format(
-                    "Rescheduled to %s %s %s %s %s [%s, %s, %s %s ,%s]",
+                    "Rescheduled to %s %s %s %s",
                     appointmentDate.toString(),
                     newTimeslot.formatTime(),
-                    patientProfile.getProfile().getFirstName(),
-                    patientProfile.getProfile().getLastName(),
-                    patientProfile.getProfile().getDateOfBirth().toString(),
-                    (provider.getProfile().getFirstName()+ " " + provider.getProfile().getLastName()),
-                    provider.getLocation().name(),
-                    provider.getLocation().getCounty(),
-                    provider.getLocation().getZip(),
-                    provider.getSpecialty().name()
-            );
+                    patientProfile.toString(),
+                    provider.toString()
+                    
+
+                    )
+            ;
             System.out.println(newapp);
             return;
-
 
         }
        
@@ -499,7 +495,7 @@ public class ClinicManager {
                     }
                 }
                 if (totalCharge > 0) {
-                    System.out.println(doctor.getProfile().getFirstName() + " " + doctor.getProfile().getLastName() + " owes $" + totalCharge);
+                   System.out.println(provider.toString() + "[ credit amount: $" + totalCharge + "]");
             }
         }
         if(provider instanceof Technician){
@@ -511,8 +507,8 @@ public class ClinicManager {
                 }
             }
             if (totalCharge > 0) {
-                System.out.println(technician.getProfile().getFirstName() + " " + technician.getProfile().getLastName() + " owes $" + totalCharge);
-        }
+                System.out.println(provider.toString() + "[ credit amount: $" + totalCharge + "]");
+            }
       } 
      } 
        System.out.println("** end of list **");
@@ -681,7 +677,7 @@ public class ClinicManager {
                      totalCharge += current.getCharge();
                      current = current.getNext();
                 }
-                System.out.println(p.getProfile().getFirstName() + " " + p.getProfile().getLastName() + " owes $" + totalCharge);
+               System.out.println(p.toString() + "[due: $" + totalCharge + "]");
               }
        }
          System.out.println("** end of list **");

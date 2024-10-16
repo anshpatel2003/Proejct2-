@@ -36,17 +36,17 @@ public class Sort {
                 Appointment a1 = list.get(j);
                 Appointment a2 = list.get(j + 1);
 
-                // Assuming appointment comparison is based on their date
+                
                 if (a1.getDate().compareTo(a2.getDate()) > 0) {
                     list.set(j, a2);  // Swap
                     list.set(j + 1, a1);
                 } else if (a1.getDate().compareTo(a2.getDate()) == 0) {
                     //if date is equal then sort by time
-                    if (a1.getTimeslot().compareTo(a2.getTimeslot()) > 0) {
-                        list.set(j, a2);  // Swap
-                        list.set(j + 1, a1);
-                    }
+                   if(a1.getProvider().compareTo(a2.getProvider()) > 0){
+                       list.set(j, a2);  // Swap
+                       list.set(j + 1, a1);
                 }
+            }
             }
         }
     }
@@ -65,7 +65,7 @@ public class Sort {
                 Provider p1 = list.get(j);
                 Provider p2 = list.get(j + 1);
 
-                // Assuming provider comparison is based on their profile
+                
                 if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);
@@ -81,7 +81,7 @@ public class Sort {
                 Appointment a1 = list.get(j);
                 Appointment a2 = list.get(j + 1);
                 
-                // Assuming appointment comparison is based on their date
+                
                 if (a1.getPatient().getProfile().compareTo(a2.getPatient().getProfile()) > 0) {
                     list.set(j, a2);  // Swap
                     list.set(j + 1, a1);
@@ -107,8 +107,7 @@ public class Sort {
             for (int j = 0; j < list.size() - 1 - i; j++) {
                 Provider p1 = list.get(j);
                 Provider p2 = list.get(j + 1);
-                
-                // Assuming provider comparison is based on their profile
+               
                 if (p1.getLocation().compareTo(p2.getLocation()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);
@@ -132,7 +131,7 @@ public class Sort {
                         p2 = p;
                     }
                 }
-                // Assuming appointment comparison is based on their date
+                
                 if (p1.getLocation().getCounty().compareTo(p2.getLocation().getCounty()) > 0) {
                     list.set(j, a2);  // Swap
                     list.set(j + 1, a1);
@@ -164,7 +163,7 @@ public class Sort {
                 Person p1 = list.get(j);
                 Person p2 = list.get(j + 1);
 
-                // Assuming provider comparison is based on their profile
+                
                 if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);
