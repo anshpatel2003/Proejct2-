@@ -19,8 +19,7 @@ public class ClinicManager {
     private final List<Appointment> appointmentList = new List<>();  // A list to manage appointments
     private final List<Provider> providerList = new List<>();  // List of providers
     private final List<Person> PatientProfile = new List<>();  // List of patients
-
-    private CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
+    private final CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
 
     /**
      * Starts the Clinic Manager by loading providers and processing commands.
