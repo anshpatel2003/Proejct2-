@@ -198,8 +198,6 @@ public class ClinicManager {
      else{
         Timeslot timeslot = Timeslot.fromSlotNumber(Integer.parseInt(tokens[2]));
 
-        //check if the appominet with the same paitent profile, date and timeslot already exists
-        //use list iterator to iterate through the list of appointments
         for (Appointment appointment : appointmentList) {
             if (appointment.getPatient().getProfile().getFirstName().equals(firstName) && appointment.getPatient().getProfile().getLastName().equals(lastName) && appointment.getPatient().getProfile().getDateOfBirth().equals(dob) && appointment.getDate().equals(appointmentDate) && appointment.getTimeslot().equals(timeslot)) {
                 
@@ -485,6 +483,7 @@ public class ClinicManager {
             return;
         }
         System.out.println("** Credit amount ordered by provider. **");
+        Sort.provider(providerList);
         for (Provider provider : providerList) {
             if (provider instanceof Doctor) {
                 Doctor doctor = (Doctor) provider;
@@ -738,9 +737,7 @@ public class ClinicManager {
  */
     private void LoadTechinicianList(){
         System.out.println("Rotation list for the technicians.");
-                        // i want a specfic order to list, so add if statemnt that check the name of the technician and add to the list
-                
-                        //JENNY PATEL (BRIDGEWATER) --> MONICA FOX (BRIDGEWATER) --> CHARLES BROWN (BRIDGEWATER) --> FRANK LIN (PISCATAWAY) --> BEN JERRY (PISCATAWAY) --> GARY JOHNSON (PISCATAWAY)
+                        
                     Technician jenny = findTechician("JENNY");
                     Technician monica = findTechician("MONICA");
                     Technician charles = findTechician("CHARLES");
