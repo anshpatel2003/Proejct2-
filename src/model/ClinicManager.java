@@ -446,7 +446,7 @@ public class ClinicManager {
         return;
        }
         System.out.println("** List of office appointments ordered by county/date/time.");
-        Sort.sortbyLocation(appointmentList, providerList);
+        Sort.sortByLocation(appointmentList, providerList);
 
         for (Appointment appointment : appointmentList) {
             if (appointment instanceof Appointment) {
@@ -465,7 +465,7 @@ public class ClinicManager {
             System.out.println("Schedule calendar is empty.");
             return;
            }
-        Sort.sortbyLocation(appointmentList, providerList);
+        Sort.sortByLocation(appointmentList, providerList);
         System.out.println("** List of radiology appointments ordered by county/date/time.");
         for (Appointment appointment : appointmentList) {
             if (appointment instanceof Imaging) {
@@ -538,7 +538,7 @@ public class ClinicManager {
     }
     /**
      * The main method creates a ClinicManager object and starts the clinic manager.
-     * @param args The command-line arguments.
+     * @param slot The command-line arguments.
      */
     private boolean isValidTimeslot(String slot) {
         try {
@@ -662,7 +662,7 @@ public class ClinicManager {
      * Prints all appointments sorted by provider location.
      */
     private void handlePrintByLocation() {
-       Sort.sortbyLocation(appointmentList, providerList);
+       Sort.sortByLocation(appointmentList, providerList);
         if(appointmentList.isEmpty()){
             System.out.println("Schedule calendar is empty.");
             return;
