@@ -53,6 +53,7 @@ public enum Location {
         return name();
     }
 
+    
     /**
      * Returns a string representation of the location in the format:
      * "LocationName (County, ZipCode)".

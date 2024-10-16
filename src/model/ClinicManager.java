@@ -449,7 +449,7 @@ public class ClinicManager {
         System.out.println("Schedule calendar is empty.");
         return;
        }
-        System.out.println("Displaying office appointments.");
+        System.out.println("** List of office appointments ordered by county/date/time.");
         Sort.sortbyLocation(appointmentList, providerList);
 
         for (Appointment appointment : appointmentList) {
@@ -458,7 +458,7 @@ public class ClinicManager {
             }
         }
 
-        // Logic to display appointments ordered by location
+        System.out.println("** end of list **");
     }
 
     /**
@@ -470,13 +470,14 @@ public class ClinicManager {
             return;
            }
         Sort.sortbyLocation(appointmentList, providerList);
-
+        System.out.println("** List of radiology appointments ordered by county/date/time.");
         for (Appointment appointment : appointmentList) {
             if (appointment instanceof Imaging) {
                 System.out.println(appointment);
             }
         }
-        // Logic to display imaging appointments ordered by location
+       System.out.println("** end of list **");
+        
     }
 
     /**
@@ -487,6 +488,7 @@ public class ClinicManager {
             System.out.println("Schedule calendar is empty.");
             return;
         }
+        System.out.println("** Credit amount ordered by provider. **");
         for (Provider provider : providerList) {
             if (provider instanceof Doctor) {
                 Doctor doctor = (Doctor) provider;
@@ -513,7 +515,7 @@ public class ClinicManager {
         }
       } 
      } 
-        // Logic to display credits
+       System.out.println("** end of list **");
     }
 
 
@@ -621,9 +623,11 @@ public class ClinicManager {
            System.out.println("Schedule calendar is empty.");
            return;
        }
+       System.out.println("** List of appointments, ordered by date/time/provider.");
         for (Appointment appointment : appointmentList) {
             System.out.println(appointment);
         }
+        System.out.println("** end of list **");
     }
 
     /**
@@ -649,10 +653,11 @@ public class ClinicManager {
             System.out.println("Schedule calendar is empty.");
             return;
         }
-       
+       System.out.println("** List of appointments, ordered by county/date/time.");
         for (Appointment appointment : appointmentList) {
             System.out.println(appointment);
         }
+        System.out.println("** end of list **");
     }
  /**
      * Prints billing statements for all patients.
@@ -663,8 +668,10 @@ public class ClinicManager {
             System.out.println("Schedule calendar is empty.");
             return;
         }
+
     //sort the patients by names, if name is equal compare date 
     Sort.patient(PatientProfile);  
+    System.out.println("** Billing statement ordered by patient. ** ");
        for(Person patient : PatientProfile){
               if(patient instanceof Patient){
                 Patient p = (Patient) patient;
@@ -677,6 +684,12 @@ public class ClinicManager {
                 System.out.println(p.getProfile().getFirstName() + " " + p.getProfile().getLastName() + " owes $" + totalCharge);
               }
        }
+         System.out.println("** end of list **");
+
+         //empty the appointmentlist
+        for (Appointment appointment : appointmentList) {
+            appointmentList.remove(appointment);
+        }
     }
 
 

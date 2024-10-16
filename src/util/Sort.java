@@ -116,7 +116,7 @@ public class Sort {
             }
         }
     }
-
+//ordered by county/date/time.
     public static void sortbyLocation(List<Appointment> list,List<Provider> providerList) {
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = 0; j < list.size() - 1 - i; j++) {
@@ -124,7 +124,7 @@ public class Sort {
                 Appointment a2 = list.get(j + 1);
                 Provider p1 = null;
                 Provider p2 = null;
-                for(Provider p:providerList){
+                for(Provider p : providerList){
                     if(p.getProfile().equals(a1.getProvider().getProfile())){
                         p1 = p;
                     }
@@ -132,13 +132,31 @@ public class Sort {
                         p2 = p;
                     }
                 }
-               if(p1.getLocation().compareTo(p2.getLocation()) > 0){
-                   list.set(j, a2);  // Swap
-                   list.set(j + 1, a1);
-               }
+                // Assuming appointment comparison is based on their date
+                if (p1.getLocation().getCounty().compareTo(p2.getLocation().getCounty()) > 0) {
+                    list.set(j, a2);  // Swap
+                    list.set(j + 1, a1);
+                } else if (p1.getLocation().compareTo(p2.getLocation()) == 0) {
+                    //if date is equal then sort by time
+                    if (a1.getDate().compareTo(a2.getDate()) > 0) {
+                        list.set(j, a2);  // Swap
+                        list.set(j + 1, a1);
+                    } else if (a1.getDate().compareTo(a2.getDate()) == 0) {
+                        if (a1.getTimeslot().compareTo(a2.getTimeslot()) > 0) {
+                            list.set(j, a2);  // Swap
+                            list.set(j + 1, a1);
+                        }
+                    }
+                }
             }
         }
     }
+
+    /**
+     * Sorts a list of patients.
+     * This can be sorted by profile or other relevant attributes.
+     * @param list The list of patients to sort.
+     */
     public static void patient(List<Person> list) {
         // Basic bubble sort (can be optimized or changed to another sort)
         for (int i = 0; i < list.size() - 1; i++) {
