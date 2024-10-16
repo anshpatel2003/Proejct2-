@@ -72,4 +72,4 @@ public class ListTest {
         assertFalse(providerList.contains(technician));
         assertTrue(providerList.contains(doctor));
     }
-}}
+}
