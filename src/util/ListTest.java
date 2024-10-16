@@ -1,97 +1,75 @@
 package util;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
+import model.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ListTest {
-
-    private List<String> list;
+    private List<Provider> providerList;
+    private Doctor doctor;
+    private Technician technician;
 
     @Before
     public void setUp() {
-        list = new List<>();
+        providerList = new List<>();
+        Profile doctorProfile = new Profile("John", "Doe", new Date(1980, 1, 1));
+        doctor = new Doctor(doctorProfile, Location.BRIDGEWATER, Specialty.FAMILY, "1234567890");
+        Profile techProfile = new Profile("Jane", "Smith", new Date(1985, 5, 5));
+        technician = new Technician(techProfile, Location.EDISON, 50);
     }
 
     @Test
-    public void testAddElement() {
-        list.add("Apple");
-        assertEquals(1, list.size());
-        assertTrue(list.contains("Apple"));
+    public void testAddDoctor() {
+        providerList.add(doctor);
+        assertEquals(1, providerList.size());
+        assertTrue(providerList.contains(doctor));
+        Provider retrievedProvider = providerList.get(0);
+        assertTrue(retrievedProvider instanceof Doctor);
+        Doctor retrievedDoctor = (Doctor) retrievedProvider;
+        assertEquals(Location.BRIDGEWATER, retrievedDoctor.getLocation());
+        assertEquals(Specialty.FAMILY, retrievedDoctor.getSpecialty());
+        assertEquals("1234567890", retrievedDoctor.getNpi());
     }
 
     @Test
-    public void testAddDuplicate() {
-        list.add("Apple");
-        list.add("Apple");
-        assertEquals(1, list.size());
+    public void testAddTechnician() {
+        providerList.add(technician);
+        assertEquals(1, providerList.size());
+        assertTrue(providerList.contains(technician));
+        Provider retrievedProvider = providerList.get(0);
+        assertTrue(retrievedProvider instanceof Technician);
+        Technician retrievedTechnician = (Technician) retrievedProvider;
+        assertEquals(Location.EDISON, retrievedTechnician.getLocation());
+        assertEquals(50, retrievedTechnician.getRatePerVisit());
     }
 
     @Test
-    public void testAddMultipleElements() {
-        list.add("Apple");
-        list.add("Banana");
-        list.add("Cherry");
-        assertEquals(3, list.size());
-        assertTrue(list.contains("Apple"));
-        assertTrue(list.contains("Banana"));
-        assertTrue(list.contains("Cherry"));
+    public void testRemoveDoctor() {
+        providerList.add(doctor);
+        providerList.add(technician);
+        assertEquals(2, providerList.size());
+        assertTrue(providerList.contains(doctor));
+
+        providerList.remove(doctor);
+
+        assertEquals(1, providerList.size());
+        assertFalse(providerList.contains(doctor));
+        assertTrue(providerList.contains(technician));
     }
 
     @Test
-    public void testAddGrowCapacity() {
-        for (int i = 0; i < 10; i++) {
-            list.add("Element" + i);
-        }
-        assertEquals(10, list.size());
-        for (int i = 0; i < 10; i++) {
-            assertTrue(list.contains("Element" + i));
-        }
-    }
+    public void testRemoveTechnician() {
+        providerList.add(doctor);
+        providerList.add(technician);
+        assertEquals(2, providerList.size());
+        assertTrue(providerList.contains(technician));
 
-    @Test
-    public void testRemoveElement() {
-        list.add("Apple");
-        list.add("Banana");
-        list.remove("Apple");
-        assertEquals(1, list.size());
-        assertFalse(list.contains("Apple"));
-        assertTrue(list.contains("Banana"));
-    }
+        providerList.remove(technician);
 
-    @Test
-    public void testRemoveNonExistentElement() {
-        list.add("Apple");
-        list.remove("Banana");
-        assertEquals(1, list.size());
-        assertTrue(list.contains("Apple"));
+        assertEquals(1, providerList.size());
+        assertFalse(providerList.contains(technician));
+        assertTrue(providerList.contains(doctor));
     }
-
-    @Test
-    public void testRemoveFromEmptyList() {
-        list.remove("Apple");
-        assertEquals(0, list.size());
-    }
-
-    @Test
-    public void testRemoveAndReAdd() {
-        list.add("Apple");
-        list.remove("Apple");
-        list.add("Apple");
-        assertEquals(1, list.size());
-        assertTrue(list.contains("Apple"));
-    }
-
-    @Test
-    public void testAddRemoveMultiple() {
-        list.add("Apple");
-        list.add("Banana");
-        list.add("Cherry");
-        list.remove("Banana");
-        assertEquals(2, list.size());
-        assertTrue(list.contains("Apple"));
-        assertFalse(list.contains("Banana"));
-        assertTrue(list.contains("Cherry"));
-    }
-}
+}}
