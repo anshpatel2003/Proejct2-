@@ -36,17 +36,17 @@ public class Sort {
                 Appointment a1 = list.get(j);
                 Appointment a2 = list.get(j + 1);
 
-                // Assuming appointment comparison is based on their date
+                
                 if (a1.getDate().compareTo(a2.getDate()) > 0) {
                     list.set(j, a2);  // Swap
                     list.set(j + 1, a1);
                 } else if (a1.getDate().compareTo(a2.getDate()) == 0) {
                     //if date is equal then sort by time
-                    if (a1.getTimeslot().compareTo(a2.getTimeslot()) > 0) {
-                        list.set(j, a2);  // Swap
-                        list.set(j + 1, a1);
-                    }
+                   if(a1.getProvider().compareTo(a2.getProvider()) > 0){
+                       list.set(j, a2);  // Swap
+                       list.set(j + 1, a1);
                 }
+            }
             }
         }
     }
@@ -65,7 +65,7 @@ public class Sort {
                 Provider p1 = list.get(j);
                 Provider p2 = list.get(j + 1);
 
-                // Assuming provider comparison is based on their profile
+                
                 if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);
@@ -80,8 +80,8 @@ public class Sort {
             for (int j = 0; j < list.size() - 1 - i; j++) {
                 Appointment a1 = list.get(j);
                 Appointment a2 = list.get(j + 1);
-
-                // Assuming appointment comparison is based on their date
+                
+                
                 if (a1.getPatient().getProfile().compareTo(a2.getPatient().getProfile()) > 0) {
                     list.set(j, a2);  // Swap
                     list.set(j + 1, a1);
@@ -101,20 +101,59 @@ public class Sort {
         }
     }
 
-    public static void sortbyLocation(List<Provider> list){
-        for (int i = 0; i < list.size() - 1; i++) {
-            for (int j = 0; j < list.size() - 1 - i; j++) {
-                Provider p1 = list.get(j);
-                Provider p2 = list.get(j + 1);
 
-                // Assuming provider comparison is based on their profile
-                if (p1.getLocation().compareTo(p2.getLocation()) > 0) {
-                    list.set(j, p2);  // Swap
-                    list.set(j + 1, p1);
+    
+//ordered by county/date/time.
+public static void sortByLocation(List<Appointment> list, List<Provider> providerList) {
+    for (int i = 0; i < list.size() - 1; i++) {
+        for (int j = 0; j < list.size() - 1 - i; j++) {
+            Appointment a1 = list.get(j);
+            Appointment a2 = list.get(j + 1);
+            Provider p1 = null;
+            Provider p2 = null;
+
+            // Find providers associated with the appointments
+            for (Provider p : providerList) {
+                if (p.getProfile().equals(a1.getProvider().getProfile())) {
+                    p1 = p;
+                }
+                if (p.getProfile().equals(a2.getProvider().getProfile())) {
+                    p2 = p;
+                }
+            }
+
+            // Compare counties
+            int countyComparison = p1.getLocation().getCounty().compareTo(p2.getLocation().getCounty());
+            if (countyComparison > 0) {
+                // Swap if county of a1 is greater than a2
+                list.set(j, a2);
+                list.set(j + 1, a1);
+            } else if (countyComparison == 0) {
+                // Compare dates if counties are the same
+                int dateComparison = a1.getDate().compareTo(a2.getDate());
+                if (dateComparison > 0) {
+                    // Swap if date of a1 is after a2
+                    list.set(j, a2);
+                    list.set(j + 1, a1);
+                } else if (dateComparison == 0) {
+                    // Compare times if dates are the same
+                    int timeComparison = a1.getTimeslot().compareTo(a2.getTimeslot());
+                    if (timeComparison > 0) {
+                        // Swap if time of a1 is after a2
+                        list.set(j, a2);
+                        list.set(j + 1, a1);
+                    }
                 }
             }
         }
     }
+}
+
+    /**
+     * Sorts a list of patients.
+     * This can be sorted by profile or other relevant attributes.
+     * @param list The list of patients to sort.
+     */
     public static void patient(List<Person> list) {
         // Basic bubble sort (can be optimized or changed to another sort)
         for (int i = 0; i < list.size() - 1; i++) {
@@ -122,7 +161,7 @@ public class Sort {
                 Person p1 = list.get(j);
                 Person p2 = list.get(j + 1);
 
-                // Assuming provider comparison is based on their profile
+                
                 if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
                     list.set(j, p2);  // Swap
                     list.set(j + 1, p1);

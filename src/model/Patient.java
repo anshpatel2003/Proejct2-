@@ -63,15 +63,8 @@ public class Patient extends Person {
      */
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("Patient Profile: ").append(profile.toString()).append("\n");
-
-        Visit current = visits;
-        result.append("Completed Visits:\n");
-        while (current != null) {
-            result.append(current.toString()).append("\n");  // Append each visit's details
-            current = current.getNext();  // Traverse the linked list
-        }
+        StringBuilder result = new StringBuilder(super.toString());
+        
 
         return result.toString();
     }
@@ -93,4 +86,29 @@ public class Patient extends Person {
     public void setVisits(Visit visits) {
         this.visits = visits;
     }
-}
+
+
+    public void removeVisit(Visit visit) {
+        if (visits == null) {
+            return;
+        }
+        if (visits.equals(visit)) {
+            visits = visits.getNext();
+            return;
+        }
+        Visit current = visits;
+        while (current.getNext() != null) {
+            if (current.getNext().equals(visit)) {
+                current.setNext(current.getNext().getNext());
+                return;
+            }
+            current = current.getNext();
+        }
+    }
+
+  
+
+
+
+}       
+
