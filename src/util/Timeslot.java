@@ -4,7 +4,7 @@ package util;
  * Represents a specific timeslot for appointments in the clinic system.
  * The timeslot is represented by an hour and minute (e.g., 9:00 AM).
  * This class implements Comparable to allow comparison between timeslots.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class Timeslot implements Comparable<Timeslot> {
  

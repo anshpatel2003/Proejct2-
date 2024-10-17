@@ -5,7 +5,7 @@ package model;
  * Represents a person in the clinic system.
  * This is the superclass for both Patient and Provider.
  * Each person has a profile which contains their information.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class Person implements Comparable<Person> {
 

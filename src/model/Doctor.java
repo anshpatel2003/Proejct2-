@@ -5,7 +5,7 @@ package model;
  * A doctor has a specialty and a unique National Provider Identification (NPI).
  * The charge per visit is based on the doctor's specialty.
  * Extends the Provider class to inherit profile and location information.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class Doctor extends Provider {
 

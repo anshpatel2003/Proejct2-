@@ -3,7 +3,7 @@ package util;
 /**
  * Represents a visit, which could be a completed appointment.
  * This class is used to create a linked list of visits for a patient.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class Visit {
 

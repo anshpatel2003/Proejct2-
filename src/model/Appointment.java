@@ -5,7 +5,7 @@ import util.Timeslot;
 /**
  * Represents an appointment in the clinic system. Each appointment contains
  * a date, timeslot, patient, and provider, where patient and provider are of type Person.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class Appointment implements Comparable<Appointment> {
 

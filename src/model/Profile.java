@@ -9,6 +9,7 @@ import util.Date;
 /**
  * The Profile class represents a patient's profile containing first name, last name, and date of birth.
  * It implements the Comparable interface to allow comparisons based on last name, first name, and date of birth.
+ * @author Ansh Patel, Jeet Soni
  */
 public class Profile implements Comparable<Profile> {
     private String fname;

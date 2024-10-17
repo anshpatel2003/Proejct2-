@@ -1,14 +1,13 @@
 package util;
 
 import model.Appointment;
-import model.Location;
 import model.Person;
 import model.Provider;
 
 /**
  * Utility class that provides sorting methods for appointments and providers.
  * Contains static methods to sort lists by various keys.
- * @author Your Name
+ * @author Ansh Patel
  */
 public class Sort {
 
@@ -28,6 +27,11 @@ public class Sort {
 
     }
 
+    /**
+     * Sorts a list of appointments by date.
+     * If two appointments have the same date, they are sorted by provider.
+     * @param list The list of appointments to sort.
+     */
     public static void sortbydate(List<Appointment> list) {
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = 0; j < list.size() - 1 - i; j++) {
@@ -70,6 +74,12 @@ public class Sort {
         }
     }
 
+    /**
+     * Sorts a list of patients.
+     * This can be sorted by profile or other relevant attributes.
+     * @param list The list of patients to sort.
+     */
+
     public static void sortbyPatient(List<Appointment> list) {
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = 0; j < list.size() - 1 - i; j++) {
@@ -97,6 +107,12 @@ public class Sort {
     }
 
 
+    /**
+     * Sorts a list of appointments by location.
+     * If two appointments have the same location, they are sorted by date and time.
+     * @param list The list of appointments to sort.
+     * @param providerList The list of providers.
+     */
     
 public static void sortByLocation(List<Appointment> list, List<Provider> providerList) {
     for (int i = 0; i < list.size() - 1; i++) {
@@ -106,7 +122,6 @@ public static void sortByLocation(List<Appointment> list, List<Provider> provide
             Provider p1 = null;
             Provider p2 = null;
 
-            // Find providers associated with the appointments
             for (Provider p : providerList) {
                 if (p.getProfile().equals(a1.getProvider().getProfile())) {
                     p1 = p;

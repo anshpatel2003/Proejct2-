@@ -11,7 +11,7 @@ import java.util.Scanner;
  * The ClinicManager class processes command-line inputs to manage appointments and provider information.
  * It replaces the Scheduler class from Project 1, and processes multiple commands at a time.
  * Commands include scheduling appointments, printing appointments, and more.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class ClinicManager {
 

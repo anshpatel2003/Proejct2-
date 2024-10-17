@@ -7,7 +7,7 @@ import java.util.Iterator;
  * Implements only the API specified without using any additional libraries or methods.
  * Implements Iterable<E> to allow iteration over the list's elements.
  * @param <E> The type of elements stored in the list.
- * @author Your Name
+ * @author Ansh Patel, Jeet Soni
  */
 public class List<E> implements Iterable<E> {
 
