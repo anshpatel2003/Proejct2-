@@ -5,20 +5,20 @@ import java.util.Iterator;
 /**
  * A generic list class that implements a resizable array to store elements of any type.
  * Implements only the API specified without using any additional libraries or methods.
- * Implements Iterable E to allow iteration over the list's elements.
+ * Implements Iterable<E> to allow iteration over the list's elements.
  * @param <E> The type of elements stored in the list.
- * @author Jeet Soni, Ansh Patel
+ * @author Ansh Patel, Jeet Soni
  */
 public class List<E> implements Iterable<E> {
 
     private E[] objects;  // Array to store elements
     private int size;     // Number of elements in the list
-
+    private static final int INITIAL_CAPACITY = 4;
     /**
      * Default constructor to initialize the list with a capacity of 4.
      */
     public List() {
-        objects = (E[]) new Object[4];  // Initial capacity of 4
+        objects = (E[]) new Object[INITIAL_CAPACITY ];  // Initial capacity of 4
         size = 0;
     }
 
@@ -40,7 +40,7 @@ public class List<E> implements Iterable<E> {
      * Increases the capacity of the list when it is full.
      */
     private void grow() {
-        E[] newArray = (E[]) new Object[objects.length + 4];  // Increase the capacity by 4
+        E[] newArray = (E[]) new Object[objects.length + INITIAL_CAPACITY ];  // Increase the capacity by 4
         System.arraycopy(objects, 0, newArray, 0, objects.length);  // Copy old elements to the new array
         objects = newArray;
     }
@@ -60,10 +60,10 @@ public class List<E> implements Iterable<E> {
      */
     public void add(E e) {
         if (contains(e)) {
-            return;  // Do not add duplicates
+            return;
         }
         if (size == objects.length) {
-            grow();  // Increase capacity if needed
+            grow();
         }
         objects[size++] = e;
     }
@@ -76,9 +76,9 @@ public class List<E> implements Iterable<E> {
         int index = find(e);
         if (index != -1) {
             for (int i = index; i < size - 1; i++) {
-                objects[i] = objects[i + 1];  // Shift elements to the left
+                objects[i] = objects[i + 1];
             }
-            objects[--size] = null;  // Reduce size and clear the last reference
+            objects[--size] = null;
         }
     }
 

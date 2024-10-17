@@ -5,7 +5,7 @@ package model;
  * Represents a person in the clinic system.
  * This is the superclass for both Patient and Provider.
  * Each person has a profile which contains their information.
- * @author Jeet Soni, Ansh Patel
+ * @author Ansh Patel, Jeet Soni
  */
 public class Person implements Comparable<Person> {
 
@@ -50,7 +50,7 @@ public class Person implements Comparable<Person> {
      */
     @Override
     public String toString() {
-        return profile.toString();  // Delegate to profile's toString method
+        return profile.toString();
     }
 
     /**

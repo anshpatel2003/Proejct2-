@@ -3,7 +3,7 @@ package util;
 /**
  * Represents a visit, which could be a completed appointment.
  * This class is used to create a linked list of visits for a patient.
- * @author Jeet Soni, Ansh Patel
+ * @author Ansh Patel, Jeet Soni
  */
 public class Visit {
 
@@ -16,7 +16,7 @@ public class Visit {
      */
     public Visit(int charge) {
         this.charge = charge;
-        this.next = null;  // By default, no next visit
+        this.next = null;
     }
 
     /**

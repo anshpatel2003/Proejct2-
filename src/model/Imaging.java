@@ -6,7 +6,7 @@ import util.Date;
  * Represents an Imaging appointment in the clinic system.
  * This class extends the Appointment class to include an imaging room (e.g., X-ray, Ultrasound, CAT scan).
  * The room is represented by the Radiology enum.
- * @author Jeet Soni, Ansh Patel
+ * @author Ansh Patel, Jeet Soni
  */
 public class Imaging extends Appointment {
 

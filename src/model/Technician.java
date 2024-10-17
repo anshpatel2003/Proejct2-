@@ -4,7 +4,7 @@ package model;
  * Represents a Technician in the clinic system.
  * A technician has a rate per visit, which defines how much they charge for each imaging appointment.
  * Extends the Provider class to inherit profile and location information.
- * @author Jeet Soni
+ * @author Ansh Patel, Jeet Soni
  */
 public class Technician extends Provider {
 

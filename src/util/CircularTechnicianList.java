@@ -1,25 +1,25 @@
-/**
- * @author Jeet Soni, Ansh Patel
- */
-
-
 package util;
 import model.Technician;
 
-/**
- * A circular linked list to manage a rotation of technicians.
- * This list maintains a circular structure, where the last node points back to the head.
+/*
+ * The CircularTechnicianList class represents a circular linked list of technicians.
+ * It contains methods to add a technician to the list, get the next technician in the list, reset the current
+ * technician to the head of the list, get the current technician, and check if the list is empty.
+ * The CircularTechnicianList class is used by the ClinicManager class to manage the list of technicians.
+ * @auhtor Ansh Patel, Jeet Soni
  */
 public class CircularTechnicianList {
-    private TechnicianNode head;   // Head of the circular list
-    private TechnicianNode current;  // Pointer to the current technician in the rotation
+    private TechnicianNode head;
+    private TechnicianNode current;
 
     /**
-     * Inner class representing each node in the circular list, holding a Technician and a reference to the next node.
+     * The TechnicianNode class represents a node in the circular linked list of technicians.
+     * It contains a reference to a technician object and a reference to the next node in the list.
+     * @author Ansh Patel, Jeet Soni
      */
     private class TechnicianNode {
-        Technician technician;   // The technician object
-        TechnicianNode next;     // Reference to the next node in the list
+        Technician technician;
+        TechnicianNode next;
 
         TechnicianNode(Technician technician) {
             this.technician = technician;
@@ -27,11 +27,12 @@ public class CircularTechnicianList {
     }
 
     /**
-     * Adds a new technician to the circular list. If the list is empty, the head and current
-     * technician are initialized. Otherwise, the new technician is added to the end of the list
-     * and linked back to the head.
+     * Constructs a CircularTechnicianList object with an empty list of technicians.
+     * The head and current references are set to null.
+     * The list is initially empty.
+     * @param head The head of the list.
+     *  
      *
-     * @param technician The technician to add to the list.
      */
     public void addTechnician(Technician technician) {
         TechnicianNode newNode = new TechnicianNode(technician);
@@ -47,15 +48,14 @@ public class CircularTechnicianList {
             newNode.next = head;
         }
         if (current == null) {
-            current = head;  // Initialize the current technician to the head of the list
+            current = head;
         }
     }
 
     /**
-     * Retrieves the next technician in the circular rotation.
-     * Moves the current technician pointer to the next node and returns the technician.
-     *
-     * @return The next technician in the rotation.
+     * Returns the next technician in the list.
+     * Otherwise, updates the current technician to the next technician in the list and returns the current technician.
+     * @return The next technician in the list.
      */
     public Technician getNextTechnician() {
         if (current == null) {
@@ -66,16 +66,15 @@ public class CircularTechnicianList {
     }
 
     /**
-     * Resets the current technician pointer back to the head of the list.
+     * Resets the current technician to the head of the list.
      */
     public void resetCurrentTechnician() {
         current = head;
     }
 
     /**
-     * Returns the current technician without advancing the rotation.
-     *
-     * @return The current technician in the rotation.
+     * Returns the current technician in the list.
+     * @return The current technician in the list.
      */
     public Technician getCurrentTechnician() {
         if (current == null) {
@@ -84,21 +83,13 @@ public class CircularTechnicianList {
         return current.technician;
     }
 
-    /**
-     * Checks if the circular list is empty.
-     *
-     * @return true if the list is empty, false otherwise.
-     */
     public boolean isEmpty() {
         return head == null;
     }
 
-    /**
-     * Returns the technician at the head of the circular list.
-     *
-     * @return The head technician.
-     */
-    public Technician gethead() {
+    public Technician gethead(){
         return head.technician;
     }
+   
+
 }

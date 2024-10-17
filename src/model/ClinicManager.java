@@ -11,15 +11,14 @@ import java.util.Scanner;
  * The ClinicManager class processes command-line inputs to manage appointments and provider information.
  * It replaces the Scheduler class from Project 1, and processes multiple commands at a time.
  * Commands include scheduling appointments, printing appointments, and more.
- * @author Jeet Soni, Ansh Patel
+ * @author Ansh Patel, Jeet Soni
  */
 public class ClinicManager {
 
     private final List<Appointment> appointmentList = new List<>();  // A list to manage appointments
     private final List<Provider> providerList = new List<>();  // List of providers
     private final List<Person> PatientProfile = new List<>();  // List of patients
-
-    private CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
+    private final CircularTechnicianList technicianList = new CircularTechnicianList(); //circular list of technicians
 
     /**
      * Starts the Clinic Manager by loading providers and processing commands.
@@ -306,23 +305,22 @@ public class ClinicManager {
         Technician startingTechnician = technicianList.getCurrentTechnician();
         Technician currentTechnician = startingTechnician;
         
-        // Loop through technicians in a circular fashion
         do {
             Location location = ((Technician) currentTechnician).getLocation();
-            // Check if the technician is available for this timeslot and the imaging room
+
             if (isTechnicianAvailable(currentTechnician, appointmentDate, timeslot) && isRoomAvailable(room, location, appointmentDate, timeslot)) {
                 assignedTechnician = currentTechnician;
                 break;
             }
-            // Move to the next technician in the rotation
+
             currentTechnician = technicianList.getNextTechnician();
-        } while (currentTechnician != startingTechnician);  // Stop when we’ve looped through all technicians
+        } while (currentTechnician != startingTechnician);
         if (assignedTechnician == null) {
             System.out.println("Cannot find an available technician at all locations for " + room.name() + " at slot " + tokens[2]);
             startingTechnician = technicianList.gethead();
             return;
         }
-        // Create an imaging appointment with the parsed information
+
         Imaging newAppointment = new Imaging(appointmentDate, timeslot, patient, assignedTechnician, room);
         appointmentList.add(newAppointment);
         Visit visit = new Visit(assignedTechnician.rate());
@@ -346,7 +344,6 @@ public class ClinicManager {
             Patient patientProfile = new Patient(new Profile(tokens[3], tokens[4], parseDate(tokens[5])));
             Appointment dummyAppointment = new Appointment(appointmentDate, timeslot, patientProfile, null);
             
-            // Check if the appointment exists in the appointment list
             if (appointmentList.contains(dummyAppointment)) {
                 Patient patient =  findPatient(patientProfile.getProfile().getFirstName(), patientProfile.getProfile().getLastName(), patientProfile.getProfile().getDateOfBirth());
                 if (patient != null) {
@@ -526,7 +523,7 @@ public class ClinicManager {
         int year = Integer.parseInt(parts[2]);
         return new Date(year, month, day);
     }
- // find docotor using npi method
+
     private Doctor findProvider(String npi) {
         for (Provider provider : providerList) {
             if (provider instanceof Doctor && ((Doctor) provider).getNpi().equals(npi)) {
@@ -543,9 +540,9 @@ public class ClinicManager {
         try {
             int timeslotNumber = Integer.parseInt(slot);  // Try to convert input to an integer
             if (timeslotNumber >= 1 && timeslotNumber <= 12) {
-                return true;  // Valid timeslot number between 1 and 6
+                return true;
             } else {
-                return false;  // Timeslot number is out of range
+                return false;
             }
         } catch (NumberFormatException e) {
             return false;  // Input was not a valid number
@@ -559,7 +556,6 @@ public class ClinicManager {
      * @return true if the DOB is valid, false otherwise.
      */
     private boolean isValidDob(Date dob) {
-        // Check if the DOB is a valid date
         if (!dob.isValid()) {
 
             return false;
@@ -724,11 +720,11 @@ public class ClinicManager {
                 imgApp.getDate().equals(appointmentDate) &&
                 imgApp.getTimeslot().equals(timeslot)
                 ) {
-                return false;  // Technician or room is busy at this timeslot
+                return false;
             }
         }
     }
-    return true;  // Technician is available
+    return true;
 }
  
 /**
@@ -802,7 +798,6 @@ public class ClinicManager {
     private boolean isRoomAvailable(Radiology room, Location location, Date date, Timeslot timeslot) {
        
         for (Appointment appointment : appointmentList) {
-          // check if the room on that date and time is avaible or not at the given location 
             if (appointment instanceof Imaging) {
                 Imaging imgApp = (Imaging) appointment;
                 Provider provider = (Provider) imgApp.getProvider();
