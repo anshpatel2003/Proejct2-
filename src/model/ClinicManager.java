@@ -139,7 +139,7 @@ public class ClinicManager {
 
             
             Sort.provider(providerList);
-            System.out.println("Providers loaded and sorted.");
+            System.out.println("Providers loaded to the list.");
             //print the provider list
             for (Provider provider : providerList) {
                 System.out.println(provider);
@@ -491,7 +491,7 @@ public class ClinicManager {
                     }
                 }
                 if (totalCharge > 0) {
-                   System.out.println(provider.toString() + "[ credit amount: $" + totalCharge + "]");
+                   System.out.println(provider.getProfile().getFirstName() + " "+ provider.getProfile().getLastName() + " " + provider.getProfile().getDateOfBirth() + " [ credit amount: $" + totalCharge + "]");
             }
         }
         if(provider instanceof Technician){
