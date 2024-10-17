@@ -94,7 +94,7 @@ public class Profile implements Comparable<Profile> {
             return firstNameComparison;
         }
 
-        return dob.compareTo(other.dob);  // Compare dates using custom Date class's compareTo
+        return dob.compareTo(other.dob);
     }
 
     /**

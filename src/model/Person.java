@@ -50,7 +50,7 @@ public class Person implements Comparable<Person> {
      */
     @Override
     public String toString() {
-        return profile.toString();  // Delegate to profile's toString method
+        return profile.toString();
     }
 
     /**

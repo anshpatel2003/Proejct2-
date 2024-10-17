@@ -16,7 +16,7 @@ public class Visit {
      */
     public Visit(int charge) {
         this.charge = charge;
-        this.next = null;  // By default, no next visit
+        this.next = null;
     }
 
     /**
