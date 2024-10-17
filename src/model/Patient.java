@@ -4,7 +4,7 @@ import util.Visit;
  * Represents a patient in the clinic system.
  * Each patient has a profile and a linked list of visits (completed appointments).
  * Extends the Person class to inherit the profile information.
- * @author Your Name
+ * @author Jeet Soni, Ansh Patel
  */
 public class Patient extends Person {
 

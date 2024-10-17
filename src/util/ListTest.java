@@ -1,3 +1,7 @@
+/**
+ * @author Jeet Soni, Ansh Patel
+ */
+
 package util;
 
 import static org.junit.Assert.*;
@@ -6,11 +10,19 @@ import model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test class for the List class that handles Provider objects,
+ * specifically adding and removing Doctor and Technician instances.
+ */
 public class ListTest {
     private List<Provider> providerList;
     private Doctor doctor;
     private Technician technician;
 
+    /**
+     * Sets up the test environment by creating a list of providers
+     * and initializing a doctor and a technician object.
+     */
     @Before
     public void setUp() {
         providerList = new List<>();
@@ -20,6 +32,10 @@ public class ListTest {
         technician = new Technician(techProfile, Location.EDISON, 50);
     }
 
+    /**
+     * Tests adding a doctor to the provider list and verifies
+     * the doctor's details are stored correctly.
+     */
     @Test
     public void testAddDoctor() {
         providerList.add(doctor);
@@ -33,6 +49,10 @@ public class ListTest {
         assertEquals("1234567890", retrievedDoctor.getNpi());
     }
 
+    /**
+     * Tests adding a technician to the provider list and verifies
+     * the technician's details are stored correctly.
+     */
     @Test
     public void testAddTechnician() {
         providerList.add(technician);
@@ -45,6 +65,10 @@ public class ListTest {
         assertEquals(50, retrievedTechnician.getRatePerVisit());
     }
 
+    /**
+     * Tests removing a doctor from the provider list and verifies
+     * the list is updated accordingly.
+     */
     @Test
     public void testRemoveDoctor() {
         providerList.add(doctor);
@@ -59,6 +83,10 @@ public class ListTest {
         assertTrue(providerList.contains(technician));
     }
 
+    /**
+     * Tests removing a technician from the provider list and verifies
+     * the list is updated accordingly.
+     */
     @Test
     public void testRemoveTechnician() {
         providerList.add(doctor);

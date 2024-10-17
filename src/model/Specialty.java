@@ -1,9 +1,7 @@
-package model;
-
 /**
  * @author Jeet Soni, Ansh Patel
  */
-
+package model;
 
 /**
  * The Specialty enum represents various medical specialties, each associated with a specific charge.

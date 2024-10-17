@@ -8,7 +8,7 @@ import model.Provider;
 /**
  * Utility class that provides sorting methods for appointments and providers.
  * Contains static methods to sort lists by various keys.
- * @author Your Name
+ * @author Jeet Soni, Ansh Patel
  */
 public class Sort {
 

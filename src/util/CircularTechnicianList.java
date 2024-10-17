@@ -1,22 +1,38 @@
+/**
+ * @author Jeet Soni, Ansh Patel
+ */
+
+
 package util;
 import model.Technician;
 
-
+/**
+ * A circular linked list to manage a rotation of technicians.
+ * This list maintains a circular structure, where the last node points back to the head.
+ */
 public class CircularTechnicianList {
-    private TechnicianNode head;
-    private TechnicianNode current;
+    private TechnicianNode head;   // Head of the circular list
+    private TechnicianNode current;  // Pointer to the current technician in the rotation
 
-    // Inner class representing each node in the circular list
+    /**
+     * Inner class representing each node in the circular list, holding a Technician and a reference to the next node.
+     */
     private class TechnicianNode {
-        Technician technician;
-        TechnicianNode next;
+        Technician technician;   // The technician object
+        TechnicianNode next;     // Reference to the next node in the list
 
         TechnicianNode(Technician technician) {
             this.technician = technician;
         }
     }
 
-    // Method to add technicians to the circular list
+    /**
+     * Adds a new technician to the circular list. If the list is empty, the head and current
+     * technician are initialized. Otherwise, the new technician is added to the end of the list
+     * and linked back to the head.
+     *
+     * @param technician The technician to add to the list.
+     */
     public void addTechnician(Technician technician) {
         TechnicianNode newNode = new TechnicianNode(technician);
         if (head == null) {
@@ -35,7 +51,12 @@ public class CircularTechnicianList {
         }
     }
 
-    // Method to get the next technician in the rotation
+    /**
+     * Retrieves the next technician in the circular rotation.
+     * Moves the current technician pointer to the next node and returns the technician.
+     *
+     * @return The next technician in the rotation.
+     */
     public Technician getNextTechnician() {
         if (current == null) {
             return null;
@@ -44,12 +65,18 @@ public class CircularTechnicianList {
         return current.technician;
     }
 
-    // Method to reset the current technician to the head of the list
+    /**
+     * Resets the current technician pointer back to the head of the list.
+     */
     public void resetCurrentTechnician() {
         current = head;
     }
 
-    // Method to get the current technician
+    /**
+     * Returns the current technician without advancing the rotation.
+     *
+     * @return The current technician in the rotation.
+     */
     public Technician getCurrentTechnician() {
         if (current == null) {
             return null;
@@ -57,14 +84,21 @@ public class CircularTechnicianList {
         return current.technician;
     }
 
-    // Method to check if the circular list is empty
+    /**
+     * Checks if the circular list is empty.
+     *
+     * @return true if the list is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return head == null;
     }
 
-    public Technician gethead(){
+    /**
+     * Returns the technician at the head of the circular list.
+     *
+     * @return The head technician.
+     */
+    public Technician gethead() {
         return head.technician;
     }
-   
-
 }

@@ -5,9 +5,9 @@ import java.util.Iterator;
 /**
  * A generic list class that implements a resizable array to store elements of any type.
  * Implements only the API specified without using any additional libraries or methods.
- * Implements Iterable<E> to allow iteration over the list's elements.
+ * Implements Iterable E to allow iteration over the list's elements.
  * @param <E> The type of elements stored in the list.
- * @author Your Name
+ * @author Jeet Soni, Ansh Patel
  */
 public class List<E> implements Iterable<E> {
 

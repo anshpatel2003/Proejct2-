@@ -1,9 +1,8 @@
-package model;
-
 /**
  * @author Jeet Soni, Ansh Patel
  */
 
+package model;
 
 /**
  * Represents various locations where clinics are located.

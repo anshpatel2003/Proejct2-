@@ -4,7 +4,7 @@ package model;
  * Represents a provider in the clinic system.
  * This is an abstract class that extends the Person class and includes the provider's location.
  * Providers have a charging rate for seeing patients, implemented in subclasses.
- * @author Your Name
+ * @author Jeet Soni, Ansh Patel
  */
 public abstract class Provider extends Person {
 
